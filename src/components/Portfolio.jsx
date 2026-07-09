@@ -1,4 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
+// ─────────────────────────────────────────────────────────────
+// jalexolson.com — one-page portfolio
+// Drop this into a Remix route, Astro island, or TanStack Start
+// page. Single default export, no required props, system fonts.
+// ─────────────────────────────────────────────────────────────
 
 const C = {
   paper: "#F7F8F6",
@@ -15,7 +21,7 @@ const C = {
   sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
 };
 
-// ───────────── DATA ─────────────
+// ───────────── DATA — edit freely ─────────────
 
 const PRODUCTS = [
   {
@@ -151,6 +157,91 @@ const AGENT_POINTS = [
   },
 ];
 
+// ───────────── MOTION & ACCESSIBILITY LAYER ─────────────
+// Hand-rolled CSS — no animation dependency. Everything below
+// is disabled by prefers-reduced-motion.
+
+const STYLES = `
+  /* keyboard navigation — visible focus everywhere */
+  .pf :focus-visible { outline: 2px solid ${C.accent}; outline-offset: 2px; border-radius: 6px; }
+
+  /* hero boot sequence: headline lines rise in */
+  .pf .boot-line { display: block; opacity: 0; transform: translateY(14px);
+    animation: pf-rise .55s cubic-bezier(.2,.7,.2,1) forwards; }
+  @keyframes pf-rise { to { opacity: 1; transform: none; } }
+
+  /* status dots ignite left-to-right, then idle at a slow pulse */
+  .pf .dot { opacity: 0;
+    animation: pf-ignite .45s ease-out forwards, pf-pulse 2.8s ease-in-out infinite; }
+  @keyframes pf-ignite { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
+  @keyframes pf-pulse { 0%,100% { box-shadow: 0 0 4px rgba(74,222,128,.45); }
+    50% { box-shadow: 0 0 10px rgba(74,222,128,.85); } }
+
+  /* terminal cursor in the header strip */
+  .pf .cursor { display: inline-block; width: 7px; height: 13px; background: ${C.accent};
+    margin-left: 6px; vertical-align: -2px; animation: pf-blink 1.1s steps(1) infinite; }
+  @keyframes pf-blink { 50% { opacity: 0; } }
+
+  /* scroll reveals — hidden ONLY after hydration (.pf-hydrated),
+     so prerendered HTML stays fully visible to crawlers & no-JS */
+  .pf .reveal { transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+  .pf-hydrated .reveal { opacity: 0; transform: translateY(14px); }
+  .pf-hydrated .reveal.in { opacity: 1; transform: none; }
+
+  /* product card lift */
+  .pf .pcard { transition: transform .25s ease, box-shadow .25s ease; }
+  .pf .pcard:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(24,32,40,.08); }
+
+  /* incident card expand: grid-rows 0fr -> 1fr height animation;
+     visibility toggle keeps collapsed content out of tab order */
+  .pf .ir-body { display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows .35s cubic-bezier(.2,.7,.2,1); }
+  .pf .ir-body.open { grid-template-rows: 1fr; }
+  .pf .ir-inner { overflow: hidden; min-height: 0; visibility: hidden;
+    transition: visibility 0s linear .35s; }
+  .pf .ir-body.open .ir-inner { visibility: visible; transition-delay: 0s; }
+  .pf .chev { display: inline-block; transition: transform .3s ease; }
+  .pf .chev.open { transform: rotate(45deg); }
+
+  /* the accessibility contract: motion is opt-out */
+  @media (prefers-reduced-motion: reduce) {
+    .pf .boot-line, .pf .dot, .pf .cursor { animation: none; opacity: 1; transform: none; }
+    .pf-hydrated .reveal { opacity: 1; transform: none; transition: none; }
+    .pf .pcard, .pf .ir-body, .pf .ir-inner, .pf .chev { transition: none; }
+  }
+`;
+
+// Reveals children when scrolled into view. The effect is a
+// textbook "sync with an external system": subscribe to
+// IntersectionObserver on mount, disconnect on cleanup.
+function Reveal({ children }) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect(); // reveal once, then stop observing
+        }
+      },
+      { threshold: 0.12 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={"reveal" + (inView ? " in" : "")}>
+      {children}
+    </div>
+  );
+}
+
 // ───────────── COMPONENTS ─────────────
 
 function Eyebrow({ children }) {
@@ -214,6 +305,7 @@ function Chip({ children, tone }) {
 
 function IncidentCard({ inc }) {
   const [open, setOpen] = useState(false);
+  const bodyId = inc.id.toLowerCase() + "-details";
   return (
     <div
       style={{
@@ -226,6 +318,8 @@ function IncidentCard({ inc }) {
     >
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls={bodyId}
         style={{
           width: "100%",
           background: "transparent",
@@ -244,29 +338,37 @@ function IncidentCard({ inc }) {
           {inc.title}
         </span>
         <Chip tone="green">RESOLVED</Chip>
-        <span style={{ fontFamily: C.mono, color: C.faint, fontSize: 13, flexShrink: 0 }}>{open ? "−" : "+"}</span>
+        <span
+          className={"chev" + (open ? " open" : "")}
+          aria-hidden="true"
+          style={{ fontFamily: C.mono, color: C.faint, fontSize: 14, flexShrink: 0 }}
+        >
+          +
+        </span>
       </button>
-      {open && (
-        <div style={{ padding: "0 20px 20px", borderTop: `1px solid ${C.line}` }}>
-          {[
-            ["Problem", inc.problem],
-            ["Fix", inc.fix],
-            ["Outcome", inc.outcome],
-          ].map(([label, text]) => (
-            <div key={label} style={{ marginTop: 16 }}>
-              <div style={{ fontFamily: C.mono, fontSize: 10.5, letterSpacing: 1.5, color: C.faint, textTransform: "uppercase", marginBottom: 5 }}>
-                {label}
+      <div id={bodyId} className={"ir-body" + (open ? " open" : "")}>
+        <div className="ir-inner">
+          <div style={{ padding: "0 20px 20px", borderTop: `1px solid ${C.line}` }}>
+            {[
+              ["Problem", inc.problem],
+              ["Fix", inc.fix],
+              ["Outcome", inc.outcome],
+            ].map(([label, text]) => (
+              <div key={label} style={{ marginTop: 16 }}>
+                <div style={{ fontFamily: C.mono, fontSize: 10.5, letterSpacing: 1.5, color: C.faint, textTransform: "uppercase", marginBottom: 5 }}>
+                  {label}
+                </div>
+                <p style={{ fontFamily: C.sans, fontSize: 14.5, lineHeight: 1.7, color: C.slate, margin: 0 }}>{text}</p>
               </div>
-              <p style={{ fontFamily: C.sans, fontSize: 14.5, lineHeight: 1.7, color: C.slate, margin: 0 }}>{text}</p>
-            </div>
-          ))}
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 16 }}>
-            {inc.tags.map((t) => (
-              <Chip key={t}>{t}</Chip>
             ))}
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 16 }}>
+              {inc.tags.map((t) => (
+                <Chip key={t}>{t}</Chip>
+              ))}
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -274,12 +376,28 @@ function IncidentCard({ inc }) {
 // ───────────── PAGE ─────────────
 
 export default function Portfolio() {
+  // Gate scroll-reveal hiding behind hydration so prerendered
+  // HTML (crawlers, no-JS) is never served with hidden content.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
   return (
-    <div style={{ background: C.paper, minHeight: "100vh", color: C.ink }}>
+    <div
+      className={"pf" + (hydrated ? " pf-hydrated" : "")}
+      style={{ background: C.paper, minHeight: "100vh", color: C.ink }}
+    >
+      <style>{STYLES}</style>
       {/* ── HERO ── */}
+      <div
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(24,32,40,0.055) 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
+        }}
+      >
       <header style={{ maxWidth: 880, margin: "0 auto", padding: "72px 24px 56px" }}>
         <div style={{ fontFamily: C.mono, fontSize: 12, color: C.faint, marginBottom: 18 }}>
           jalexolson.com <span style={{ color: C.line }}>/</span> Castle Rock, CO <span style={{ color: C.line }}>/</span> remote
+          <span className="cursor" aria-hidden="true" />
         </div>
         <h1
           style={{
@@ -291,11 +409,11 @@ export default function Portfolio() {
             margin: "0 0 22px",
           }}
         >
-          Alex Olson builds products,
-          <br />
-          the platforms under them,
-          <br />
-          <span style={{ color: C.accent }}>and the agents that ship both.</span>
+          <span className="boot-line" style={{ animationDelay: "0.05s" }}>J Alex Olson builds products,</span>
+          <span className="boot-line" style={{ animationDelay: "0.15s" }}>the platforms under them,</span>
+          <span className="boot-line" style={{ animationDelay: "0.25s", color: C.accent }}>
+            and the agents that ship both.
+          </span>
         </h1>
         <p style={{ fontFamily: C.sans, fontSize: 17, lineHeight: 1.7, color: C.slate, maxWidth: 640, margin: "0 0 30px" }}>
           Founder-engineer with 10+ years across frontend, edge infrastructure, and SEO. I run four SaaS
@@ -323,16 +441,27 @@ export default function Portfolio() {
             ["100+ client sites", true],
             ["Edge prerender fleet", true],
             ["Dedicated infra, 12-core", true],
-          ].map(([label]) => (
+          ].map(([label], i) => (
             <span key={label} style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
-              <span style={{ width: 7, height: 7, borderRadius: 99, background: "#4ADE80", boxShadow: "0 0 6px rgba(74,222,128,0.6)" }} />
+              <span
+                className="dot"
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: 99,
+                  background: "#4ADE80",
+                  animationDelay: `${0.7 + i * 0.18}s, ${1.6 + i * 0.18}s`,
+                }}
+              />
               <span style={{ fontFamily: C.mono, fontSize: 12, color: "#D7DEE9" }}>{label}</span>
             </span>
           ))}
         </div>
       </header>
+      </div>
 
       {/* ── PRODUCTS ── */}
+      <Reveal>
       <section style={{ maxWidth: 880, margin: "0 auto", padding: "24px 24px 56px" }}>
         <Eyebrow>Shipped & operating</Eyebrow>
         <SectionTitle>Products I own end to end</SectionTitle>
@@ -340,6 +469,7 @@ export default function Portfolio() {
           {PRODUCTS.map((p) => (
             <div
               key={p.name}
+              className="pcard"
               style={{
                 background: C.card,
                 border: `1px solid ${C.line}`,
@@ -369,8 +499,10 @@ export default function Portfolio() {
           ))}
         </div>
       </section>
+      </Reveal>
 
       {/* ── INCIDENTS ── */}
+      <Reveal>
       <section style={{ maxWidth: 880, margin: "0 auto", padding: "0 24px 56px" }}>
         <Eyebrow>Problems solved</Eyebrow>
         <SectionTitle>Selected incident reports</SectionTitle>
@@ -382,8 +514,10 @@ export default function Portfolio() {
           <IncidentCard key={inc.id} inc={inc} />
         ))}
       </section>
+      </Reveal>
 
       {/* ── AI / AGENTS ── */}
+      <Reveal>
       <section style={{ background: C.inkPanel, padding: "56px 0" }}>
         <div style={{ maxWidth: 880, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 2, color: "#4ADE80", textTransform: "uppercase", marginBottom: 10 }}>
@@ -413,8 +547,10 @@ export default function Portfolio() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── PLATFORM ── */}
+      <Reveal>
       <section style={{ maxWidth: 880, margin: "0 auto", padding: "56px 24px" }}>
         <Eyebrow>The toolbox</Eyebrow>
         <SectionTitle>Platform fluency</SectionTitle>
@@ -433,8 +569,10 @@ export default function Portfolio() {
           ))}
         </div>
       </section>
+      </Reveal>
 
       {/* ── CONTACT ── */}
+      <Reveal>
       <footer style={{ borderTop: `1px solid ${C.line}`, padding: "48px 24px 64px" }}>
         <div style={{ maxWidth: 880, margin: "0 auto" }}>
           <Eyebrow>Contact</Eyebrow>
@@ -469,11 +607,16 @@ export default function Portfolio() {
               </a>
             ))}
           </div>
-          <div style={{ fontFamily: C.mono, fontSize: 11, color: C.faint, marginTop: 36 }}>
-            © {new Date().getFullYear()} Jack Olson · Built with React, shipped from the edge.
+          <div style={{ fontFamily: C.mono, fontSize: 11.5, color: C.faint, marginTop: 36, lineHeight: 1.9 }}>
+            Motion respects prefers-reduced-motion · fully keyboard navigable · zero animation dependencies — all
+            motion is hand-rolled CSS
+          </div>
+          <div style={{ fontFamily: C.mono, fontSize: 11, color: C.faint, marginTop: 10 }}>
+            © {new Date().getFullYear()} J Alex Olson · Built with React, shipped from the edge.
           </div>
         </div>
       </footer>
+      </Reveal>
     </div>
   );
 }
