@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // ─────────────────────────────────────────────────────────────
-// jalexolson.com — one-page portfolio
+// jalexolson.com, one-page portfolio
 // Drop this into a Remix route, Astro island, or TanStack Start
 // page. Single default export, no required props, system fonts.
 // ─────────────────────────────────────────────────────────────
@@ -21,47 +21,47 @@ const C = {
   sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
 };
 
-// ───────────── DATA — edit freely ─────────────
+// ───────────── DATA (edit freely) ─────────────
 
 const PRODUCTS = [
   {
     name: "Rendr.it / SEO Vibe",
     status: "live",
-    what: "Prerendering & SEO infrastructure for React and Vite SPAs",
+    what: "Prerendering and SEO infrastructure for React and Vite apps",
     detail:
-      "Edge-routed prerendering service: a Cloudflare Worker classifies traffic (search crawlers, AI/GEO crawlers, users), serves rendered HTML to bots and the SPA to humans. Runs production traffic for client sites today.",
+      "A Cloudflare Worker sits in front of client sites, figures out whether each request is a search crawler, an AI bot, or a person, and serves rendered HTML or the app accordingly. It handles real production traffic every day.",
     stack: ["Cloudflare Workers", "Docker", "Redis", "Coolify"],
   },
   {
     name: "OleyBot",
     status: "live",
-    what: "Licensed desktop automation platform for streamers & TCG collectors",
+    what: "A licensed desktop app for streamers and card collectors",
     detail:
-      "Commercial desktop app with license validation, gated binary distribution through Supabase Edge Functions and signed URLs, Stripe billing, and a restock-alert pipeline in active development.",
+      "Software people actually pay for, which means licensing, billing, and protecting the builds. Downloads run through Supabase Edge Functions with signed URLs, and a restock alert pipeline is in the works.",
     stack: ["Supabase", "Edge Functions", "React", "Stripe"],
   },
   {
     name: "Bonsai Mail",
     status: "live",
-    what: "Cold email platform with multi-tenant OAuth",
+    what: "A cold email platform",
     detail:
-      "Sending infrastructure with Microsoft 365 and Google OAuth — migrated single-tenant to multi-tenant Azure app registration, hardened token refresh and edge-function delivery paths.",
+      "Sending infrastructure with Microsoft 365 and Google sign-in. I moved the Microsoft side from single tenant to multi tenant and hardened the token refresh path after it started biting real users.",
     stack: ["Supabase", "Microsoft Graph", "OAuth 2.0", "React"],
   },
   {
     name: "Blocknerds",
     status: "live",
-    what: "Real-time crypto market intelligence dashboard",
+    what: "A real-time crypto market dashboard",
     detail:
-      "Streaming derivatives analytics — CVD, open interest, funding, liquidation maps — with a rules engine and a PM2-managed alert bot fleet on dedicated hardware.",
+      "Built for my own trading, then kept because it works. Live derivatives data, CVD, open interest, funding, liquidation maps, and a fleet of alert bots running under PM2 on my own server.",
     stack: ["React/Vite", "CoinGlass API", "Node", "PM2"],
   },
   {
     name: "Levotate",
     status: "live",
-    what: "Web development & digital marketing agency",
+    what: "My web development and marketing agency",
     detail:
-      "Founded and operate an agency running 100+ production WordPress properties on owned dedicated infrastructure — server administration, performance, SEO, and Google Ads under one roof. Previously built and sold a 34-client management business.",
+      "Over a hundred WordPress sites in production on a dedicated server I administer myself. Performance, SEO, ads, backups, the works. Along the way I built up and sold a 34 client management business.",
     stack: ["WordPress", "cPanel/WHM", "Cloudflare", "SEO"],
   },
 ];
@@ -70,21 +70,21 @@ const INCIDENTS = [
   {
     id: "IR-01",
     sev: "SEV-1",
-    title: "Open-proxy abuse on prerender fleet",
+    title: "Open-proxy abuse on the prerender fleet",
     problem:
-      "Attackers discovered the prerender endpoint could be pointed at arbitrary URLs and used it as a free rendering proxy — 6,844 container restarts before containment.",
-    fix: "Rewrote the Cloudflare Worker routing layer: strict origin allow-listing, an expanded bot-detection list, junk-path traps to poison scrapers, and per-route rate limits at the edge before traffic ever reaches a container.",
-    outcome: "Abuse traffic zeroed out; renderer CPU returned to baseline; legitimate crawler success rate unaffected.",
+      "Someone figured out the prerender endpoint would render any URL you pointed it at, and started using it as a free proxy. The containers restarted 6,844 times before I caught it.",
+    fix: "I rewrote the Cloudflare Worker in front of it. Strict origin allow list, a much better bot list, junk path traps to poison the scrapers, and rate limits at the edge so garbage dies before it ever reaches a container.",
+    outcome: "Abuse traffic went to zero, renderer CPU came back to baseline, and legitimate crawlers never noticed a thing.",
     tags: ["Cloudflare Workers", "Security", "Edge routing"],
   },
   {
     id: "IR-02",
     sev: "SEV-1",
-    title: "Paid binaries publicly downloadable",
+    title: "Paid binaries were publicly downloadable",
     problem:
-      "OleyBot's licensed desktop builds were reachable as static CDN URLs — anyone with the link could pull paid software with no entitlement check.",
-    fix: "Re-architected distribution: downloads now route through a gated Supabase Edge Function that validates the license server-side and issues short-lived signed URLs. Static paths removed and revoked.",
-    outcome: "Zero unauthenticated download paths remain; entitlement is enforced at request time, not by URL obscurity.",
+      "OleyBot's licensed desktop builds were sitting on static CDN URLs. Anyone with the link could download software people pay for, no license check, nothing.",
+    fix: "I rebuilt distribution from the ground up. Downloads now go through a Supabase Edge Function that validates the license first and hands back a short lived signed URL. The old static paths are gone and revoked.",
+    outcome: "There is no longer any way to pull a build without a valid license. Entitlement is enforced when you ask, not by hoping nobody finds the URL.",
     tags: ["Supabase", "Edge Functions", "Signed URLs", "AuthZ"],
   },
   {
@@ -92,29 +92,29 @@ const INCIDENTS = [
     sev: "SEV-2",
     title: "Cloudflare Workers quota exhaustion",
     problem:
-      "Legacy WordPress URL patterns from migrated sites drew endless crawler traffic into the Worker layer, burning the entire request quota and threatening the prerender service for every tenant.",
-    fix: "Traced the traffic to stale URL-pattern crawl loops, deployed crawler traps and pattern-level filtering ahead of the Worker, and split routing so junk paths die at the edge for free.",
-    outcome: "Quota consumption dropped to a sustainable baseline; no tenant downtime during remediation.",
+      "Crawlers kept hammering stale URL patterns left over from old WordPress migrations, and all of that junk traffic flowed through the Worker layer, burning the entire request quota and threatening the service for every tenant.",
+    fix: "I traced where the traffic was coming from, set traps for the crawl loops, and split the routing so junk paths get rejected at the edge for free instead of counting against the quota.",
+    outcome: "Usage dropped back to a sustainable baseline. No tenant went down while I fixed it.",
     tags: ["Cloudflare", "Observability", "Cost control"],
   },
   {
     id: "IR-04",
     sev: "SEV-2",
-    title: "Framework CVE in a client audit",
+    title: "A framework CVE found during a client audit",
     problem:
-      "A full security and code audit of a production Next.js/Supabase platform surfaced a high-severity middleware authorization-bypass CVE, among other issues, in live customer-facing code.",
-    fix: "Delivered a prioritized findings report: patched the vulnerable middleware path, tightened row-level security policies, and closed secondary issues across edge functions and API routes.",
-    outcome: "Critical path patched before exploitation; client left with a remediation roadmap instead of a scare.",
+      "A client hired me to audit their Next.js and Supabase platform. I found a high severity middleware authorization bypass CVE sitting in production code, along with a handful of smaller issues.",
+    fix: "I wrote up a prioritized findings report, patched the vulnerable middleware path, tightened their row level security policies, and worked through the secondary issues in their edge functions and API routes.",
+    outcome: "The critical hole was closed before anyone found it, and the client walked away with a remediation roadmap instead of a scare.",
     tags: ["Next.js", "Supabase RLS", "Security audit"],
   },
   {
     id: "IR-05",
     sev: "SEV-3",
-    title: "Headless CMS + SEO pipeline, end to end",
+    title: "A headless CMS and SEO pipeline, end to end",
     problem:
-      "A retail client's React SPA was invisible to search and AI crawlers, with no structured data and a two-layer script-stripping bug corrupting prerendered output.",
-    fix: "Deployed Sanity Studio on a custom subdomain, built the content schemas and PostSeo component layer with JSON-LD structured data, and fixed the prerender proxy so rendered HTML shipped intact — including GEO/AEO crawler support for AI search.",
-    outcome: "Fully indexed content pipeline: marketers publish in Sanity, crawlers get complete structured HTML at the edge.",
+      "A retail client's React app was invisible to search engines. No structured data, and a script stripping bug was quietly corrupting the prerendered HTML in two separate layers.",
+    fix: "I set up Sanity Studio on their own subdomain, built the content schemas and SEO component layer with JSON-LD structured data, fixed the prerender proxy so the rendered HTML shipped intact, and added support for the newer AI crawlers while I was in there.",
+    outcome: "Marketers publish in Sanity, crawlers get complete structured HTML at the edge, and the site actually shows up now.",
     tags: ["Sanity", "JSON-LD", "SEO/GEO", "Prerendering"],
   },
 ];
@@ -144,25 +144,25 @@ const PLATFORM = [
 
 const AGENT_POINTS = [
   {
-    h: "Agents are the workflow, not a feature",
-    p: "Every product above ships through AI-assisted development daily — Claude-driven builds from schema design to edge deployment. Not autocomplete: full agent loops that plan, build, and verify.",
+    h: "This is just how I work now",
+    p: "Every product on this page ships through AI assisted development, daily. Not autocomplete. Agents that plan, build, and deploy, with me directing traffic and setting the bar.",
   },
   {
-    h: "Building the harness",
-    p: "Custom prompts, project rules, and repeatable agent workflows that make generated code safe to ship: security review passes, dependency discipline, and infrastructure the agent can actually deploy to.",
+    h: "I build the harness",
+    p: "Project rules, custom prompts, review passes, and infrastructure the agents can actually deploy to. Making generated code safe to ship is real work, and it turns out I like that work.",
   },
   {
-    h: "Judgment is the product",
-    p: "AI writes a lot of my code. The value I add is knowing when it's wrong — the security holes, the cache bugs, the reference-equality mistakes — and building systems where those get caught before production.",
+    h: "Judgment is my job",
+    p: "Agents write fast and confidently, and sometimes confidently wrong. What I bring is catching the security holes, the cache bugs, and the subtle mistakes before production catches them for me.",
   },
 ];
 
 // ───────────── MOTION & ACCESSIBILITY LAYER ─────────────
-// Hand-rolled CSS — no animation dependency. Everything below
+// Hand-rolled CSS, no animation dependency. Everything below
 // is disabled by prefers-reduced-motion.
 
 const STYLES = `
-  /* keyboard navigation — visible focus everywhere */
+  /* keyboard navigation: visible focus everywhere */
   .pf :focus-visible { outline: 2px solid ${C.accent}; outline-offset: 2px; border-radius: 6px; }
 
   /* hero boot sequence: headline lines rise in */
@@ -182,7 +182,7 @@ const STYLES = `
     margin-left: 6px; vertical-align: -2px; animation: pf-blink 1.1s steps(1) infinite; }
   @keyframes pf-blink { 50% { opacity: 0; } }
 
-  /* scroll reveals — hidden ONLY after hydration (.pf-hydrated),
+  /* scroll reveals: hidden ONLY after hydration (.pf-hydrated),
      so prerendered HTML stays fully visible to crawlers & no-JS */
   .pf .reveal { transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
   .pf-hydrated .reveal { opacity: 0; transform: translateY(14px); }
@@ -396,7 +396,7 @@ export default function Portfolio() {
       >
       <header style={{ maxWidth: 880, margin: "0 auto", padding: "72px 24px 56px" }}>
         <div style={{ fontFamily: C.mono, fontSize: 12, color: C.faint, marginBottom: 18 }}>
-          jalexolson.com <span style={{ color: C.line }}>/</span> Castle Rock, CO <span style={{ color: C.line }}>/</span> remote
+          J Alex Olson <span style={{ color: C.line }}>/</span> Castle Rock, CO <span style={{ color: C.line }}>/</span> remote
           <span className="cursor" aria-hidden="true" />
         </div>
         <h1
@@ -409,19 +409,19 @@ export default function Portfolio() {
             margin: "0 0 22px",
           }}
         >
-          <span className="boot-line" style={{ animationDelay: "0.05s" }}>J Alex Olson builds products,</span>
-          <span className="boot-line" style={{ animationDelay: "0.15s" }}>the platforms under them,</span>
+          <span className="boot-line" style={{ animationDelay: "0.05s" }}>I build products,</span>
+          <span className="boot-line" style={{ animationDelay: "0.15s" }}>the platforms they run on,</span>
           <span className="boot-line" style={{ animationDelay: "0.25s", color: C.accent }}>
             and the agents that ship both.
           </span>
         </h1>
         <p style={{ fontFamily: C.sans, fontSize: 17, lineHeight: 1.7, color: C.slate, maxWidth: 640, margin: "0 0 30px" }}>
-          Founder-engineer with 10+ years across frontend, edge infrastructure, and SEO. I run four SaaS
-          products and an agency's worth of production infrastructure — designed, built, secured, and
-          operated with AI agents in the loop every day.
+          I've spent over ten years building for the web. These days that means four SaaS products of my
+          own, the infrastructure behind a hundred plus client sites, and a lot of time making AI agents
+          genuinely useful. I like shipping things, and I like it even more when they hold up.
         </p>
 
-        {/* status strip — signature element */}
+        {/* status strip, the signature element */}
         <div
           style={{
             background: C.inkPanel,
@@ -463,8 +463,8 @@ export default function Portfolio() {
       {/* ── PRODUCTS ── */}
       <Reveal>
       <section style={{ maxWidth: 880, margin: "0 auto", padding: "24px 24px 56px" }}>
-        <Eyebrow>Shipped & operating</Eyebrow>
-        <SectionTitle>Products I own end to end</SectionTitle>
+        <Eyebrow>Shipped and still running</Eyebrow>
+        <SectionTitle>Things I built and operate</SectionTitle>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
           {PRODUCTS.map((p) => (
             <div
@@ -507,8 +507,8 @@ export default function Portfolio() {
         <Eyebrow>Problems solved</Eyebrow>
         <SectionTitle>Selected incident reports</SectionTitle>
         <p style={{ fontFamily: C.sans, fontSize: 15, lineHeight: 1.7, color: C.slate, maxWidth: 620, margin: "-14px 0 24px" }}>
-          The work I'm proudest of reads like postmortems — real production problems on systems I own,
-          found, fixed, and kept fixed. Tap any report for the details.
+          Things break. These are a few problems that came up on systems I run, and how I handled them.
+          Open any report for the details.
         </p>
         {INCIDENTS.map((inc) => (
           <IncidentCard key={inc.id} inc={inc} />
@@ -521,7 +521,7 @@ export default function Portfolio() {
       <section style={{ background: C.inkPanel, padding: "56px 0" }}>
         <div style={{ maxWidth: 880, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 2, color: "#4ADE80", textTransform: "uppercase", marginBottom: 10 }}>
-            AI-native by default
+            How I actually work
           </div>
           <h2
             style={{
@@ -534,8 +534,8 @@ export default function Portfolio() {
               lineHeight: 1.15,
             }}
           >
-            I don't use AI tools.
-            <br />I build with agents.
+            Most of my code is written with agents.
+            <br />All of it is mine.
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 22 }}>
             {AGENT_POINTS.map((a) => (
@@ -553,7 +553,7 @@ export default function Portfolio() {
       <Reveal>
       <section style={{ maxWidth: 880, margin: "0 auto", padding: "56px 24px" }}>
         <Eyebrow>The toolbox</Eyebrow>
-        <SectionTitle>Platform fluency</SectionTitle>
+        <SectionTitle>What I work with</SectionTitle>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 14 }}>
           {PLATFORM.map((g) => (
             <div key={g.group} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 18 }}>
@@ -577,11 +577,11 @@ export default function Portfolio() {
         <div style={{ maxWidth: 880, margin: "0 auto" }}>
           <Eyebrow>Contact</Eyebrow>
           <h2 style={{ fontFamily: C.sans, fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 14px" }}>
-            Let's build something that survives production.
+            I like building things that survive production.
           </h2>
           <p style={{ fontFamily: C.sans, fontSize: 15, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 24px" }}>
-            This page is itself a React component — no framework lock-in, deployable as a Remix route or an
-            Astro island. The source is the resume.
+            This page is a React component running as an Astro island, and the repo is public. If you want
+            to know how I work, the source is right there.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {[
@@ -608,8 +608,8 @@ export default function Portfolio() {
             ))}
           </div>
           <div style={{ fontFamily: C.mono, fontSize: 11.5, color: C.faint, marginTop: 36, lineHeight: 1.9 }}>
-            Motion respects prefers-reduced-motion · fully keyboard navigable · zero animation dependencies — all
-            motion is hand-rolled CSS
+            Motion respects your reduced motion setting. Fully keyboard navigable. No animation libraries,
+            just CSS.
           </div>
           <div style={{ fontFamily: C.mono, fontSize: 11, color: C.faint, marginTop: 10 }}>
             © {new Date().getFullYear()} J Alex Olson · Built with React, shipped from the edge.
