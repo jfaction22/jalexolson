@@ -30,34 +30,66 @@ const C = {
 
 // ───────────── DATA (edit freely) ─────────────
 
+const MARQUEE = [
+  "React", "TypeScript", "AI agents", "Cloudflare Workers", "Vite",
+  "Automations", "Supabase", "TanStack", "SEO", "Stripe", "Performance",
+];
+
 const SERVICES = [
   {
     icon: "code",
-    title: "React apps, built and shipped",
-    detail:
-      "New builds or rescues. React, TypeScript, Vite, TanStack, and a deploy pipeline you can run without me.",
+    featured: true,
+    label: "React development · my go-to",
+    benefit: "Launch the app your business actually needs",
+    how:
+      "Custom web apps, built and shipped: designed, deployed, documented, and handed over so you own it outright instead of renting another subscription.",
     tags: ["React", "TypeScript", "Vite", "TanStack"],
+    visual: "App screenshot: a custom dashboard in production",
+  },
+  {
+    icon: "bot",
+    label: "AI agents + automation",
+    benefit: "Get hours of busywork back every week",
+    how:
+      "Invoice entry, report chasing, status updates, alerts: if your team does it by hand every week, I can probably automate it. I run fleets of these bots for my own products.",
+    tags: ["LLM APIs", "Workflows", "Bots", "Node"],
+    visual: "Diagram: manual workflow before / automated after",
   },
   {
     icon: "gauge",
-    title: "Performance and Core Web Vitals",
-    detail:
-      "Lighthouse audits, bundle diets, image and font strategy. This page is my sample: run Lighthouse on it right now.",
+    label: "Performance + Core Web Vitals",
+    benefit: "A faster site closes more customers",
+    how:
+      "Slow pages bleed sales and Google rankings. I find the bloat and cut it. This page is the demo: run Lighthouse on it right now.",
     tags: ["Lighthouse", "Core Web Vitals", "Bundle analysis"],
+    visual: "Screenshot: Lighthouse 100 / 100 / 100 / 100",
   },
   {
     icon: "search",
-    title: "SEO for JavaScript apps",
-    detail:
-      "SPAs that search engines and AI crawlers can actually read. I built a prerendering service for exactly this problem.",
+    label: "SEO for JavaScript apps",
+    benefit: "Show up when your customers search",
+    how:
+      "If Google and AI assistants can't read your app, you're invisible to buyers already looking for you. I built a prerendering service for exactly this problem; it runs production traffic today.",
     tags: ["Prerendering", "Structured data", "Edge routing"],
+    visual: "Screenshot: search results before / after prerendering",
   },
   {
     icon: "plug",
-    title: "Integrations and platform work",
-    detail:
-      "Stripe billing, Google and Microsoft OAuth, Supabase, license gating. The plumbing that makes a product a business.",
+    label: "Integrations + platform work",
+    benefit: "Take payments and sign-ups without the duct tape",
+    how:
+      "Stripe billing, Google and Microsoft login, licensing: the plumbing between demo and business. I've wired all of it for my own paying products.",
     tags: ["Stripe", "OAuth 2.0", "Supabase", "Cloudflare"],
+    visual: "Screenshot: checkout and sign-in flow",
+  },
+  {
+    icon: "globe",
+    label: "Marketing sites · Astro + React",
+    benefit: "A website that works while you work",
+    how:
+      "Fast, findable, and maintained, with hosting handled if you want it. Built on React and Astro, the same stack as this page. I've run over a hundred sites for a decade; yours won't be my first rodeo.",
+    tags: ["React", "Astro", "SEO", "Hosting"],
+    visual: "Screenshot: this site, which is also the sample",
   },
 ];
 
@@ -92,10 +124,58 @@ const PRODUCTS = [
   },
   {
     name: "Levotate",
-    what: "My web development and marketing agency",
+    retired: true,
+    what: "My web development and marketing agency, now sunset",
     detail:
-      "Over a hundred WordPress sites in production on a dedicated server I administer myself. Performance, SEO, ads, backups, the works. Along the way I built up and sold a 34 client management business.",
+      "Ran over a hundred WordPress sites in production on a dedicated server I administered myself. Performance, SEO, ads, backups, the works. Built up and sold a 34 client management business along the way.",
     stack: ["WordPress", "cPanel/WHM", "Cloudflare", "SEO"],
+  },
+];
+
+// Side projects: smaller cards below the flagship products.
+// Verify the stack tags and details, these are drafts.
+const SIDE_PROJECTS = [
+  {
+    name: "Build a Golf Sim (BAGS)",
+    detail:
+      "buildagolfsim.com. Specs a complete golf simulator around your room and budget. No spreadsheet math, no guesswork.",
+    stack: ["React", "Interactive builder"],
+  },
+  {
+    name: "Levotate CRM + Ticketing",
+    detail:
+      "The internal platform that kept a 100+ site agency sane, built because nothing off the shelf fit how we worked.",
+    stack: ["React", "Internal tools"],
+  },
+  {
+    name: "Perfect Campsite Finder",
+    detail:
+      "Cross references public land, terrain, and drive time to find campsites worth the trip, not the first pin on the map.",
+    stack: ["React", "Maps", "Geo data"],
+  },
+  {
+    name: "Workout Tracker",
+    detail:
+      "A no fluff training log: programs, sets, progressive overload. Fast enough to use between sets.",
+    stack: ["React", "Mobile-first"],
+  },
+  {
+    name: "League Chat",
+    detail:
+      "Real time chat for fantasy football leagues. Smack talk threaded to matchups and trades, not lost in a group text.",
+    stack: ["React", "Realtime"],
+  },
+  {
+    name: "Colorado Snow Tracker",
+    detail:
+      "Live snowfall and conditions for Colorado resorts in one dashboard, so a powder day never sneaks past.",
+    stack: ["React", "Data viz", "APIs"],
+  },
+  {
+    name: "Card Vault",
+    detail:
+      "A Pokemon card collection manager with the capabilities of Dex: sets, variants, condition, market values.",
+    stack: ["React", "Collection data"],
   },
 ];
 
@@ -104,45 +184,33 @@ const INCIDENTS = [
     id: "IR-01",
     sev: "SEV-1",
     title: "Open-proxy abuse on the prerender fleet",
-    problem:
-      "Attackers found that the prerender endpoint would render arbitrary URLs and started using it as a free rendering proxy. The render containers restarted 6,844 times before containment.",
-    fix:
-      "Locked rendering to an allowlist of registered domains, added per-origin rate limits at the Worker, and set hard timeouts on the render containers.",
-    outcome:
-      "Abuse traffic dropped to zero and paying customers never saw an outage.",
+    problem: "prerender endpoint abused as a free rendering proxy; containers restarted 6,844 times",
+    fix: "domain allowlist, per-origin rate limits at the Worker, hard container timeouts",
+    outcome: "abuse traffic to zero; paying customers never saw an outage",
   },
   {
     id: "IR-02",
     sev: "SEV-2",
     title: "License gating rebuilt for OleyBot binaries",
-    problem:
-      "Download links for the paid desktop app could be shared once issued, so anyone with a link could pull licensed binaries.",
-    fix:
-      "Moved distribution behind Supabase Edge Functions that validate the license on every request and issue short-lived signed URLs.",
-    outcome:
-      "Sharing a link now gets you an expired URL. Piracy path closed with zero added friction for real customers.",
+    problem: "issued download links for licensed binaries could be shared by anyone",
+    fix: "edge functions validate the license per request and issue short-lived signed URLs",
+    outcome: "piracy path closed, zero added friction for real customers",
   },
   {
     id: "IR-03",
     sev: "SEV-2",
     title: "Cloudflare Workers quota exhaustion",
-    problem:
-      "A traffic spike pushed the edge routing layer through its Workers request quota, threatening every site behind it at once.",
-    fix:
-      "Added caching in front of the Worker and tiered the routing so only bot traffic pays the Worker cost.",
-    outcome:
-      "Request volume fell by an order of magnitude, with headroom for the next spike.",
+    problem: "traffic spike burned through the Workers request quota, every site at risk at once",
+    fix: "cache in front of the Worker; tiered routing so only bot traffic pays the Worker cost",
+    outcome: "request volume down an order of magnitude, headroom for the next spike",
   },
   {
     id: "IR-04",
     sev: "SEV-3",
     title: "Next.js CVE audit across client properties",
-    problem:
-      "A published Next.js CVE potentially exposed client sites I maintain. Nobody was going to check a hundred properties by hand.",
-    fix:
-      "Scripted an audit across every property to fingerprint framework versions, then patched the affected sites.",
-    outcome:
-      "Everything patched inside the disclosure window, with a repeatable script for the next CVE.",
+    problem: "published Next.js CVE, a hundred client properties to check by hand",
+    fix: "scripted framework fingerprinting across every property, patched the exposed sites",
+    outcome: "everything patched inside the disclosure window, repeatable script for the next CVE",
   },
 ];
 
@@ -165,7 +233,7 @@ const SKILLS = [
   {
     icon: "terminal",
     layer: "Operations",
-    items: ["Docker", "PM2", "Coolify", "Linux server admin", "Monitoring and alerting"],
+    items: ["Docker", "PM2", "Coolify", "Linux server admin", "AI agents and bot fleets", "Monitoring and alerting"],
   },
 ];
 
@@ -180,6 +248,14 @@ const LINKS = [
 // Inline SVG icons: zero network requests, inherit currentColor.
 const ICON_PATHS = {
   code: <path d="M8 6 3 12l5 6M16 6l5 6-5 6" />,
+  bot: (
+    <>
+      <rect x="4" y="8" width="16" height="12" rx="3" />
+      <path d="M12 8V4M9 4h6" />
+      <circle cx="9" cy="14" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="14" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
   gauge: (
     <>
       <path d="M5 19a9 9 0 1 1 14 0" />
@@ -286,15 +362,6 @@ function LiveDot() {
   return <span aria-hidden="true" className="pf-dot" style={{ background: C.green }} />;
 }
 
-function LiveTag() {
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
-      <LiveDot />
-      <span style={{ fontFamily: C.mono, fontSize: 10.5, letterSpacing: 1, color: C.green }}>LIVE</span>
-    </span>
-  );
-}
-
 // ───────────── PAGE ─────────────
 
 export default function Portfolio() {
@@ -351,6 +418,7 @@ export default function Portfolio() {
   return (
     <div
       ref={rootRef}
+      className="pf-shell"
       style={{
         background: C.paper,
         color: C.ink,
@@ -360,6 +428,54 @@ export default function Portfolio() {
       }}
     >
       <style>{`
+        /* subtle dot grid over the paper background */
+        .pf-shell {
+          background-image: radial-gradient(rgba(24,32,40,0.075) 1px, transparent 1px);
+          background-size: 22px 22px;
+          overflow-x: clip;
+        }
+        .pf-shell ::selection { background: rgba(232,99,28,0.25); }
+        /* highlighter swipe on the headline's key phrase */
+        .pf-hl {
+          background-image: linear-gradient(100deg,
+            rgba(232,99,28,0) 0.5%, rgba(232,99,28,0.24) 3%,
+            rgba(232,99,28,0.24) 97%, rgba(232,99,28,0) 99.5%);
+          background-repeat: no-repeat;
+          background-position: 0 72%;
+          animation: pf-swipe .55s ease .6s both;
+        }
+        @keyframes pf-swipe {
+          from { background-size: 0% 42%; }
+          to { background-size: 100% 42%; }
+        }
+        /* full-bleed marquee: transform-only, pauses on hover */
+        .pf-marquee {
+          width: 100vw;
+          margin-left: calc(50% - 50vw);
+          overflow: hidden;
+          border-top: 1px solid ${C.line};
+          border-bottom: 1px solid ${C.line};
+          background: ${C.card};
+          padding: 13px 0;
+        }
+        .pf-marquee-track {
+          display: flex;
+          width: max-content;
+          animation: pf-scroll 32s linear infinite;
+        }
+        .pf-marquee:hover .pf-marquee-track { animation-play-state: paused; }
+        .pf-marquee-row { display: flex; align-items: center; }
+        .pf-m-item {
+          font-family: ${C.mono};
+          font-size: 12px;
+          letter-spacing: 1.8px;
+          text-transform: uppercase;
+          color: ${C.slate};
+          padding: 0 16px;
+          white-space: nowrap;
+        }
+        .pf-m-sep { color: ${C.accent}; font-size: 11px; }
+        @keyframes pf-scroll { to { transform: translateX(-50%); } }
         .pf-dot {
           display: inline-block;
           width: 8px; height: 8px;
@@ -371,6 +487,42 @@ export default function Portfolio() {
           0%, 100% { box-shadow: 0 0 0 3px rgba(31,122,77,0.15); }
           50% { box-shadow: 0 0 0 6px rgba(31,122,77,0.06); }
         }
+        @keyframes pf-rise {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: none; }
+        }
+        /* hero intro: pure CSS, runs on load. Text fades in quickly;
+           the photo animates transform only so LCP is never delayed. */
+        .pf-intro > * { animation: pf-rise .5s ease both; }
+        .pf-intro > *:nth-child(1) { animation-delay: .05s; }
+        .pf-intro > *:nth-child(2) { animation-delay: .12s; }
+        .pf-intro > *:nth-child(3) { animation-delay: .2s; }
+        .pf-intro > *:nth-child(4) { animation-delay: .28s; }
+        .pf-intro > *:nth-child(5) { animation-delay: .36s; }
+        /* hero CTA */
+        .pf-cta {
+          display: inline-block;
+          font-family: ${C.sans};
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+          background: ${C.accentText};
+          padding: 13px 30px;
+          border-radius: 10px;
+          text-decoration: none;
+          box-shadow: 0 2px 6px rgba(186, 78, 18, 0.25);
+          transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        .pf-cta:hover {
+          background: #A34310;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(186, 78, 18, 0.3);
+        }
+        @keyframes pf-settle {
+          from { transform: translateY(22px); }
+          to { transform: translateY(0); }
+        }
         /* scroll reveals: hidden ONLY after hydration (.pf-hydrated),
            so the page is complete for crawlers and no-JS visitors */
         .pf-hydrated .pf-reveal {
@@ -379,10 +531,28 @@ export default function Portfolio() {
           transition: opacity .55s ease, transform .55s ease;
         }
         .pf-hydrated .pf-reveal.pf-in { opacity: 1; transform: none; }
-        @media (prefers-reduced-motion: reduce) {
-          .pf-hydrated .pf-reveal { opacity: 1; transform: none; transition: none; }
-          .pf-hydrated .pf-dot { animation: none; }
+        /* cards stagger in behind their section (animation, not
+           transition, so hover transforms stay instant) */
+        .pf-hydrated .pf-reveal .pf-card { opacity: 0; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card { animation: pf-rise .5s ease both; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(2) { animation-delay: .07s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(3) { animation-delay: .14s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(4) { animation-delay: .21s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(5) { animation-delay: .28s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(6) { animation-delay: .35s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(7) { animation-delay: .42s; }
+        /* nav underline sweep */
+        .pf-nav a { position: relative; }
+        .pf-nav a::after {
+          content: "";
+          position: absolute; left: 0; bottom: -3px;
+          width: 100%; height: 1.5px;
+          background: currentColor;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform .25s ease;
         }
+        .pf-nav a:hover::after, .pf-nav a:focus-visible::after { transform: scaleX(1); }
         /* keyboard navigation: visible focus everywhere */
         .pf-root a:focus-visible, .pf-root button:focus-visible {
           outline: 2px solid ${C.accent};
@@ -400,8 +570,18 @@ export default function Portfolio() {
            silhouette, while box-shadow would get clipped away. */
         .pf-photo-frame {
           position: relative;
-          filter: drop-shadow(0 4px 10px rgba(24, 32, 40, 0.14))
-                  drop-shadow(0 20px 38px rgba(24, 32, 40, 0.22));
+          /* reserve room for the offset accent panel so it never
+             overflows the layout and causes horizontal scroll */
+          margin: 0 12px 12px 0;
+          filter: drop-shadow(0 8px 18px rgba(24, 32, 40, 0.10))
+                  drop-shadow(0 22px 56px rgba(24, 32, 40, 0.14));
+          animation: pf-settle .7s ease both;
+          transition: transform .3s ease, filter .3s ease;
+        }
+        .pf-hydrated .pf-photo-frame:hover {
+          transform: translateY(-4px);
+          filter: drop-shadow(0 10px 22px rgba(24, 32, 40, 0.12))
+                  drop-shadow(0 30px 68px rgba(24, 32, 40, 0.17));
         }
         .pf-photo-frame::before {
           content: "";
@@ -413,28 +593,223 @@ export default function Portfolio() {
           clip-path: var(--pf-cut);
         }
         .pf-photo { width: 100%; height: auto; display: block; position: relative; clip-path: var(--pf-cut); }
-        .pf-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-        .pf-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-        .pf-grid-skills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-        section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+        /* ── stats strip: numbers instead of paragraphs ── */
+        .pf-stats {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          margin-top: 46px;
+          border-top: 1px solid ${C.line};
+          animation: pf-rise .6s ease .45s both;
+        }
+        .pf-stat { padding: 18px 18px 0 0; }
+        .pf-stat + .pf-stat { border-left: 1px solid ${C.line}; padding-left: 18px; }
+        .pf-stat-n {
+          font-family: ${C.mono};
+          font-weight: 700;
+          font-size: clamp(24px, 3.4vw, 38px);
+          letter-spacing: -1px;
+          color: ${C.ink};
+        }
+        .pf-stat-l {
+          font-family: ${C.mono};
+          font-size: 11px;
+          letter-spacing: 1.2px;
+          text-transform: uppercase;
+          color: ${C.faint};
+          margin-top: 4px;
+        }
+        /* ── the deck: services as sticky stacking cards ──
+           Pure CSS: each card pins below the header and the next
+           one scrolls up and over it. Offsets leave a 12px peek
+           of each covered card, like a deck edge. */
+        .pf-stack { display: grid; gap: 30px; }
+        .pf-stack-card {
+          position: sticky;
+          top: calc(74px + (var(--i) * 12px));
+          min-height: min(64vh, 620px);
+          display: grid;
+          grid-template-columns: 1.05fr 0.95fr;
+          gap: 40px;
+          align-items: center;
+          background: ${C.card};
+          border: 1px solid ${C.line};
+          border-radius: 18px;
+          padding: 40px 44px;
+        }
+        .pf-stack-card:first-child {
+          background: #FDF1E9;
+          border-color: rgba(232,99,28,0.4);
+          box-shadow: 0 10px 28px rgba(24,32,40,0.06);
+        }
+        /* image placeholder: swap for a real <img loading="lazy"> later */
+        .pf-ph {
+          border: 2px dashed rgba(232,99,28,0.45);
+          border-radius: 14px;
+          background: rgba(232,99,28,0.05);
+          aspect-ratio: 4 / 3;
+          display: grid;
+          place-items: center;
+          text-align: center;
+          padding: 20px;
+        }
+        @media (max-width: 860px) {
+          .pf-stack-card {
+            grid-template-columns: 1fr;
+            gap: 22px;
+            min-height: 0;
+            padding: 26px 22px;
+            align-items: start;
+          }
+          .pf-ph { aspect-ratio: 16 / 10; }
+        }
+        /* ── the ledger: products as expandable ruled rows ── */
+        .pf-ledger { border-top: 1px solid ${C.line}; }
+        .pf-lrow { border-bottom: 1px solid ${C.line}; }
+        .pf-lrow summary {
+          list-style: none;
+          cursor: pointer;
+          display: grid;
+          grid-template-columns: auto auto 1fr auto;
+          align-items: center;
+          gap: 14px;
+          padding: 16px 12px;
+          transition: background .2s ease;
+        }
+        .pf-lrow summary::-webkit-details-marker { display: none; }
+        .pf-hydrated .pf-lrow summary:hover { background: ${C.card}; }
+        .pf-lrow[open] summary { background: rgba(232,99,28,0.05); }
+        .pf-lbody { padding: 6px 12px 20px 34px; }
+        .pf-plus {
+          font-family: ${C.mono};
+          font-size: 18px;
+          color: ${C.accentText};
+          width: 22px;
+          text-align: center;
+          transition: transform .25s ease;
+        }
+        details[open] > summary .pf-plus { transform: rotate(45deg); }
+        .pf-srow {
+          display: grid;
+          grid-template-columns: 220px 1fr;
+          gap: 18px;
+          padding: 13px 12px;
+          border-bottom: 1px solid ${C.line};
+          transition: background .2s ease;
+        }
+        .pf-hydrated .pf-srow:hover { background: ${C.card}; }
+        /* ── the bento: flagship products in varied tiles ── */
+        .pf-bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .pf-b-tile {
+          border: 1px solid ${C.line};
+          border-radius: 14px;
+          background: ${C.card};
+          padding: 20px 22px;
+          transition: border-color .2s ease, transform .2s ease;
+        }
+        .pf-hydrated .pf-b-tile:hover { border-color: ${C.accent}; transform: translateY(-2px); }
+        .pf-b-feat {
+          grid-column: span 2;
+          background: #FDF1E9;
+          border-color: rgba(232,99,28,0.4);
+        }
         @media (max-width: 900px) {
-          .pf-grid-3 { grid-template-columns: 1fr 1fr; }
+          .pf-bento { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 560px) {
+          .pf-bento { grid-template-columns: 1fr; }
+          .pf-b-feat { grid-column: auto; }
+        }
+        /* ── the terminal: incidents as a live console ── */
+        .pf-term {
+          background: ${C.panel};
+          border-radius: 14px;
+          overflow: hidden;
+          box-shadow: 0 18px 44px rgba(24,32,40,0.18);
+        }
+        .pf-term-bar {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          background: #0D1319;
+          padding: 11px 16px;
+        }
+        .pf-term-dot { width: 11px; height: 11px; border-radius: 999px; }
+        .pf-term-title {
+          font-family: ${C.mono};
+          font-size: 11.5px;
+          color: ${C.panelFaint};
+          margin-left: 10px;
+        }
+        .pf-term-body {
+          font-family: ${C.mono};
+          font-size: 12.5px;
+          line-height: 1.7;
+          color: #C7D0D8;
+          padding: 20px 22px 22px;
+        }
+        .pf-term-cmd { color: ${C.panelFaint}; margin-bottom: 14px; }
+        .pf-term-entry { margin-bottom: 18px; }
+        .pf-term-head { color: ${C.panelText}; font-weight: 700; }
+        .pf-term-id { color: ${C.accent}; font-weight: 400; }
+        .pf-term-kv {
+          display: grid;
+          grid-template-columns: 76px 1fr;
+          gap: 10px;
+          padding-left: 14px;
+        }
+        .pf-term-k { color: ${C.accent}; }
+        .pf-term-ok { color: #3FCF8E; }
+        .pf-cursor { display: inline-block; width: 8px; background: #C7D0D8; }
+        .pf-hydrated .pf-cursor { animation: pf-blink 1.1s steps(1) infinite; }
+        @keyframes pf-blink { 50% { opacity: 0; } }
+        /* ── ghost labels on section edges ── */
+        .pf-ghost {
+          position: absolute;
+          top: 20px;
+          right: 4px;
+          writing-mode: vertical-rl;
+          font-family: ${C.mono};
+          font-weight: 800;
+          font-size: clamp(56px, 7vw, 92px);
+          letter-spacing: 8px;
+          color: transparent;
+          -webkit-text-stroke: 1px rgba(24,32,40,0.10);
+          user-select: none;
+          pointer-events: none;
+        }
+        /* render perf for sections below the services deck only.
+           Excluded: the hero (content-visibility's paint containment
+           would clip the photo's drop shadow) and the services
+           section (containment breaks the sticky stacking cards
+           and would clip their shadows). */
+        section:nth-of-type(n+3) { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+        @media (max-width: 1200px) {
+          .pf-ghost { display: none; }
         }
         @media (max-width: 760px) {
           .pf-hero { grid-template-columns: 1fr; gap: 28px; }
           .pf-hero-photo { max-width: 420px; }
-          .pf-grid-2 { grid-template-columns: 1fr; }
-          .pf-grid-skills { grid-template-columns: 1fr 1fr; }
+          .pf-stats { grid-template-columns: 1fr 1fr; }
+          .pf-stat:nth-child(3) { border-left: none; padding-left: 0; }
+          .pf-stat { padding-top: 14px; }
+          .pf-srow { grid-template-columns: 1fr; gap: 4px; }
         }
-        @media (max-width: 560px) {
-          .pf-grid-3 { grid-template-columns: 1fr; }
+        .pf-card { transition: background .2s ease; }
+        @media (prefers-reduced-motion: reduce) {
+          .pf-hydrated .pf-reveal { opacity: 1; transform: none; transition: none; }
+          .pf-hydrated .pf-dot { animation: none; }
+          .pf-intro > *, .pf-photo-frame, .pf-stats, .pf-hydrated .pf-reveal.pf-in .pf-card { animation: none; opacity: 1; }
+          .pf-hydrated .pf-reveal .pf-card { opacity: 1; }
+          .pf-hydrated .pf-photo-frame:hover { transform: none; }
+          .pf-nav a::after { transition: none; }
+          .pf-cta { transition: none; }
+          .pf-cta:hover { transform: none; }
+          .pf-marquee-track { animation: none; }
+          .pf-hl { animation: none; background-size: 100% 42%; }
+          .pf-plus, .pf-lrow summary, .pf-srow, .pf-b-tile { transition: none; }
+          .pf-hydrated .pf-b-tile:hover { transform: none; }
+          .pf-hydrated .pf-cursor { animation: none; }
         }
-        @media (max-width: 460px) {
-          .pf-grid-skills { grid-template-columns: 1fr; }
-        }
-        .pf-card { transition: border-color .2s ease, transform .2s ease; }
-        .pf-hydrated .pf-card:hover { border-color: ${C.accent}; transform: translateY(-2px); }
-        @media (prefers-reduced-motion: reduce) { .pf-hydrated .pf-card:hover { transform: none; } }
       `}</style>
 
       <div className="pf-root" style={{ maxWidth: 1040, margin: "0 auto", padding: "0 22px" }}>
@@ -451,7 +826,7 @@ export default function Portfolio() {
           <div style={{ fontFamily: C.mono, fontSize: 13, fontWeight: 700, letterSpacing: 0.5 }}>
             jalexolson<span style={{ color: C.accentText }}>.com</span>
           </div>
-          <nav aria-label="Sections" style={{ display: "flex", gap: 18, fontFamily: C.mono, fontSize: 12 }}>
+          <nav className="pf-nav" aria-label="Sections" style={{ display: "flex", gap: 18, fontFamily: C.mono, fontSize: 12 }}>
             <a href="#work" style={{ color: C.slate, textDecoration: "none" }}>Work</a>
             <a href="#incidents" style={{ color: C.slate, textDecoration: "none" }}>Incidents</a>
             <a href="#contact" style={{ color: C.accentText, textDecoration: "none" }}>Hire me</a>
@@ -461,7 +836,13 @@ export default function Portfolio() {
         {/* hero */}
         <section aria-labelledby="hero-title" style={{ padding: "64px 0 56px" }}>
           <div className="pf-hero">
-            <div>
+            <div className="pf-intro">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 18 }}>
+                <Chip tone="green">
+                  <LiveDot /> <span style={{ marginLeft: 6 }}>Available for freelance work</span>
+                </Chip>
+                <Chip tone="line">React · TypeScript · performance</Chip>
+              </div>
               <Eyebrow>Alex Olson · Frontend engineer · Colorado</Eyebrow>
               <h1
                 id="hero-title"
@@ -473,18 +854,14 @@ export default function Portfolio() {
                   margin: "0 0 18px",
                 }}
               >
-                I build bespoke apps tailored to what people actually want.
+                I build <span className="pf-hl">bespoke apps</span> tailored to what people actually want.
               </h1>
-              <p style={{ fontSize: 17, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 22px" }}>
-                I have 12+ years building for the web. I sold off a WordPress agency that had over 100 clients in its hayday.
+              <p style={{ fontSize: 17, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 26px" }}>
+                I have 12+ years building for the web. I sold off a WordPress agency that had over 100 clients in its heyday.
                 I've built 5 different SaaS products, dozens of AI automations and agents.
-                
               </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-                <Chip tone="green">
-                  <LiveDot /> <span style={{ marginLeft: 6 }}>Available for freelance work</span>
-                </Chip>
-                <Chip tone="line">React · TypeScript · performance</Chip>
+              <div>
+                <a href="#contact" className="pf-cta">Hire Me</a>
               </div>
             </div>
             <div className="pf-hero-photo">
@@ -493,64 +870,145 @@ export default function Portfolio() {
                   className="pf-photo"
                   src={PHOTO}
                   alt="Alex Olson standing at Maroon Lake below the Maroon Bells near Aspen, Colorado"
-                  width="880"
-                  height="1173"
+                  width="780"
+                  height="1040"
                   fetchPriority="high"
                   decoding="async"
                 />
-              </div>              
+              </div>
             </div>
           </div>
 
-        </section>
-
-        {/* services */}
-        <section aria-labelledby="services-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
-          <Eyebrow>For clients</Eyebrow>
-          <h2 id="services-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
-            What I can build for you
-          </h2>
-          <div className="pf-grid-2">
-            {SERVICES.map((s) => (
-              <article
-                key={s.title}
-                className="pf-card"
-                style={{ border: `1px solid ${C.line}`, borderRadius: 12, background: C.card, padding: "20px 22px" }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, color: C.accentText }}>
-                  <Icon name={s.icon} />
-                  <h3 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: C.ink }}>{s.title}</h3>
-                </div>
-                <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.65, margin: "0 0 14px" }}>{s.detail}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {s.tags.map((t) => (
-                    <Chip key={t}>{t}</Chip>
-                  ))}
-                </div>
-              </article>
+          {/* stats strip: the resume paragraph, as numbers */}
+          <div className="pf-stats">
+            {[
+              ["12+", "years building for the web"],
+              ["5", "SaaS products shipped"],
+              ["100+", "sites run in production"],
+              ["6,844", "container restarts survived"],
+            ].map(([n, l]) => (
+              <div key={l} className="pf-stat">
+                <div className="pf-stat-n">{n}</div>
+                <div className="pf-stat-l">{l}</div>
+              </div>
             ))}
           </div>
         </section>
 
+        {/* marquee: decorative, so aria-hidden; content exists elsewhere */}
+        <div className="pf-marquee" aria-hidden="true">
+          <div className="pf-marquee-track">
+            {[0, 1].map((i) => (
+              <div key={i} className="pf-marquee-row">
+                {MARQUEE.map((m) => (
+                  <span key={m} className="pf-m-item">
+                    {m} <span className="pf-m-sep"> ✦</span>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* services: sticky stacking deck (no pf-reveal here, a
+            transformed ancestor would break position: sticky) */}
+        <section aria-labelledby="services-title" style={{ padding: "26px 0 54px" }}>
+          <Eyebrow>For clients</Eyebrow>
+          <h2 id="services-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
+            What hiring me actually gets you
+          </h2>
+          <div className="pf-stack">
+            {SERVICES.map((s, i) => (
+              <div key={s.benefit} className="pf-stack-card" style={{ "--i": i }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, color: C.accentText }}>
+                    <Icon name={s.icon} />
+                    <span style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 1.4, textTransform: "uppercase" }}>
+                      {s.label}
+                    </span>
+                  </div>
+                  <div style={{ fontWeight: 800, fontSize: "clamp(24px, 3.6vw, 40px)", letterSpacing: "-0.8px", lineHeight: 1.1, marginBottom: 16 }}>
+                    {s.benefit}
+                  </div>
+                  <p style={{ fontSize: 15, color: C.slate, lineHeight: 1.65, margin: "0 0 16px", maxWidth: 520 }}>{s.how}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {s.tags.map((t) => (
+                      <Chip key={t}>{t}</Chip>
+                    ))}
+                  </div>
+                </div>
+                <div className="pf-ph">
+                  <div>
+                    <div style={{ color: C.accentText, marginBottom: 10, display: "flex", justifyContent: "center" }}>
+                      <Icon name={s.icon} />
+                    </div>
+                    <div style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: C.accentText, marginBottom: 6 }}>
+                      Image placeholder
+                    </div>
+                    <div style={{ fontFamily: C.mono, fontSize: 12, color: C.faint }}>{s.visual}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* the zero-friction closer */}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "10px 22px",
+              padding: "34px 12px 0",
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 700 }}>
+              Not sure which one you need?
+            </div>
+            <div style={{ fontSize: 14, color: C.slate }}>
+              Tell me the problem, I'll tell you the fix. That part's free.
+            </div>
+            <a
+              href="mailto:jack@jalexolson.com"
+              style={{
+                fontFamily: C.mono,
+                fontSize: 13,
+                textDecoration: "none",
+                padding: "8px 16px",
+                borderRadius: 8,
+                border: `1px solid ${C.accent}`,
+                background: C.accentSoft,
+                color: C.accentText,
+              }}
+            >
+              Describe your problem ↗
+            </a>
+          </div>
+        </section>
+
         {/* products */}
-        <section id="work" aria-labelledby="work-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
+        <section id="work" aria-labelledby="work-title" className="pf-reveal" style={{ padding: "26px 0 54px", position: "relative" }}>
+          <div className="pf-ghost" aria-hidden="true">SHIPPED</div>
           <Eyebrow>Shipped and still running</Eyebrow>
           <h2 id="work-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
             Things I built and operate
           </h2>
-          <div className="pf-grid-3">
-            {PRODUCTS.map((p) => (
-              <article
-                key={p.name}
-                className="pf-card"
-                style={{ border: `1px solid ${C.line}`, borderRadius: 12, background: C.card, padding: "20px 22px" }}
-              >
+          <div className="pf-bento">
+            {PRODUCTS.map((p, i) => (
+              <article key={p.name} className={i === 0 ? "pf-card pf-b-tile pf-b-feat" : "pf-card pf-b-tile"}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <h3 style={{ fontSize: 17, fontWeight: 700, margin: 0 }}>{p.name}</h3>
-                  <LiveTag />
+                  {p.retired ? (
+                    <span
+                      aria-hidden="true"
+                      style={{ display: "inline-block", width: 8, height: 8, borderRadius: 999, background: C.faint }}
+                    />
+                  ) : (
+                    <LiveDot />
+                  )}
+                  <h3 style={{ fontSize: i === 0 ? 20 : 16, fontWeight: 800, margin: 0 }}>{p.name}</h3>
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>{p.what}</div>
-                <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.65, margin: "0 0 14px" }}>{p.detail}</p>
+                <div style={{ fontSize: 13.5, fontWeight: 700, color: C.accentText, marginBottom: 10 }}>{p.what}</div>
+                <p style={{ fontSize: i === 0 ? 14 : 13.5, color: C.slate, lineHeight: 1.6, margin: "0 0 14px" }}>{p.detail}</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                   {p.stack.map((t) => (
                     <Chip key={t}>{t}</Chip>
@@ -559,68 +1017,91 @@ export default function Portfolio() {
               </article>
             ))}
           </div>
+
+          {/* side projects: compact rows in the same ledger */}
+          <div
+            style={{
+              fontFamily: C.mono,
+              fontSize: 11,
+              letterSpacing: 1.5,
+              textTransform: "uppercase",
+              color: C.faint,
+              margin: "34px 0 0",
+            }}
+          >
+            Side projects and experiments
+          </div>
+          <div className="pf-ledger" style={{ marginTop: 12 }}>
+            {SIDE_PROJECTS.map((p) => (
+              <details key={p.name} className="pf-card pf-lrow">
+                <summary>
+                  <span aria-hidden="true" style={{ fontFamily: C.mono, fontSize: 13, color: C.accentText }}>▸</span>
+                  <span style={{ fontSize: 14.5, fontWeight: 700 }}>{p.name}</span>
+                  <span />
+                  <span className="pf-plus" aria-hidden="true">+</span>
+                </summary>
+                <div className="pf-lbody">
+                  <p style={{ fontSize: 13.5, color: C.slate, lineHeight: 1.6, margin: 0, maxWidth: 640 }}>{p.detail}</p>
+                </div>
+              </details>
+            ))}
+          </div>
         </section>
 
         {/* incident reports */}
-        <section id="incidents" aria-labelledby="incidents-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
+        <section id="incidents" aria-labelledby="incidents-title" className="pf-reveal" style={{ padding: "26px 0 54px", position: "relative" }}>
+          <div className="pf-ghost" aria-hidden="true">PAGED</div>
           <Eyebrow>Selected incident reports</Eyebrow>
-          <h2 id="incidents-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 8px" }}>
+          <h2 id="incidents-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
             Problems I've actually been paged for
           </h2>
-          <p style={{ fontSize: 15, color: C.slate, lineHeight: 1.7, maxWidth: 620, margin: "0 0 26px" }}>
-            Postmortems from my own infrastructure: what broke, what I did, what changed.
-          </p>
-          <div style={{ display: "grid", gap: 16 }}>
-            {INCIDENTS.map((ir) => (
-              <article
-                key={ir.id}
-                style={{ border: `1px solid ${C.line}`, borderRadius: 12, background: C.card, padding: "20px 22px" }}
-              >
-                <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-                  <span style={{ fontFamily: C.mono, fontSize: 12, color: C.faint }}>{ir.id}</span>
-                  <Chip tone="accent">{ir.sev}</Chip>
-                  <Chip tone="green">RESOLVED</Chip>
-                  <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0, flexBasis: "100%" }}>{ir.title}</h3>
+          <div className="pf-term">
+            <div className="pf-term-bar">
+              <span className="pf-term-dot" style={{ background: C.accent }} />
+              <span className="pf-term-dot" style={{ background: "#F2C744" }} />
+              <span className="pf-term-dot" style={{ background: "#3FCF8E" }} />
+              <span className="pf-term-title">alex@edge: ~/ops</span>
+            </div>
+            <div className="pf-term-body">
+              <div className="pf-term-cmd">$ tail -f incidents.log</div>
+              {INCIDENTS.map((ir) => (
+                <div key={ir.id} className="pf-term-entry">
+                  <div className="pf-term-head">
+                    <span className="pf-term-id">[{ir.id}]</span> <span className="pf-term-id">[{ir.sev}]</span> {ir.title}
+                  </div>
+                  <div className="pf-term-kv"><span className="pf-term-k">problem</span><span>{ir.problem}</span></div>
+                  <div className="pf-term-kv"><span className="pf-term-k">fix</span><span>{ir.fix}</span></div>
+                  <div className="pf-term-kv">
+                    <span className="pf-term-k">outcome</span>
+                    <span>{ir.outcome} <span className="pf-term-ok">✓ resolved</span></span>
+                  </div>
                 </div>
-                <dl style={{ margin: 0, display: "grid", gap: 10 }}>
-                  {[
-                    ["Problem", ir.problem],
-                    ["Fix", ir.fix],
-                    ["Outcome", ir.outcome],
-                  ].map(([k, v]) => (
-                    <div key={k} style={{ display: "grid", gridTemplateColumns: "88px 1fr", gap: 12 }}>
-                      <dt style={{ fontFamily: C.mono, fontSize: 12, color: C.accentText, paddingTop: 2 }}>{k}</dt>
-                      <dd style={{ margin: 0, fontSize: 14, color: C.slate, lineHeight: 1.65 }}>{v}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </article>
-            ))}
+              ))}
+              <div aria-hidden="true">$ <span className="pf-cursor">&nbsp;</span></div>
+            </div>
           </div>
         </section>
 
         {/* how I work */}
         <section aria-labelledby="how-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
-          <div style={{ background: C.panel, color: C.panelText, borderRadius: 16, padding: "34px 30px" }}>
-            <div style={{ fontFamily: C.mono, fontSize: 12, letterSpacing: 2.2, textTransform: "uppercase", color: C.accent, marginBottom: 14 }}>
-              How I work
-            </div>
-            <h2 id="how-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 18px", color: C.panelText }}>
-              Fast to build, honest about what I ship
-            </h2>
-            <div className="pf-grid-2" style={{ gap: 22 }}>
-              {[
-                ["AI-accelerated, human-verified", "I use AI tooling heavily and read every diff before it lands, like a pull request from a fast junior engineer."],
-                ["Performance is a budget, not a phase", "System fonts, one optimized image, no dead JavaScript. This site practices what it bills for."],
-                ["I own the whole path", "DNS to database. On my servers there's no one to escalate to, so I build like the person on call."],
-                ["Clean handoffs", "You get the repo, the docs, the pipeline, and a walkthrough. You own the thing when we're done."],
-              ].map(([title, body]) => (
-                <div key={title}>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, margin: "0 0 6px", color: C.panelText }}>{title}</h3>
-                  <p style={{ fontSize: 14, color: C.panelFaint, lineHeight: 1.7, margin: 0 }}>{body}</p>
-                </div>
-              ))}
-            </div>
+          <Eyebrow>How I work</Eyebrow>
+          <h2 id="how-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 28px" }}>
+            Fast to build, honest about what I ship
+          </h2>
+          <div style={{ display: "grid", gap: 22, maxWidth: 760 }}>
+            {[
+              "AI-accelerated, human-verified. I read every diff before it lands.",
+              "Performance is a budget, not a phase. This site practices what it bills for.",
+              "DNS to database: I own the whole path and build like the person on call.",
+              "Clean handoffs. You own the thing when we're done.",
+            ].map((t) => (
+              <div key={t} className="pf-card" style={{ display: "flex", gap: 18, alignItems: "baseline" }}>
+                <span aria-hidden="true" style={{ fontFamily: C.mono, color: C.accent, fontSize: 16 }}>▸</span>
+                <span style={{ fontSize: "clamp(18px, 2.6vw, 26px)", fontWeight: 800, letterSpacing: -0.5, lineHeight: 1.4 }}>
+                  {t}
+                </span>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -630,20 +1111,16 @@ export default function Portfolio() {
           <h2 id="skills-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
             Fluency by layer
           </h2>
-          <div className="pf-grid-skills">
+          <div style={{ borderTop: `1px solid ${C.line}` }}>
             {SKILLS.map((s) => (
-              <div key={s.layer} style={{ border: `1px solid ${C.line}`, borderRadius: 12, background: C.card, padding: "18px 20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, color: C.accentText }}>
+              <div key={s.layer} className="pf-srow" style={{ alignItems: "baseline" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.accentText }}>
                   <Icon name={s.icon} />
                   <h3 style={{ fontFamily: C.mono, fontSize: 12, letterSpacing: 1.5, textTransform: "uppercase", margin: 0, color: C.accentText }}>
                     {s.layer}
                   </h3>
                 </div>
-                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 7 }}>
-                  {s.items.map((i) => (
-                    <li key={i} style={{ fontSize: 13.5, color: C.slate }}>{i}</li>
-                  ))}
-                </ul>
+                <div style={{ fontSize: 13.5, color: C.slate, lineHeight: 1.7 }}>{s.items.join("  ·  ")}</div>
               </div>
             ))}
           </div>
@@ -656,8 +1133,7 @@ export default function Portfolio() {
             Have a project? Let's talk.
           </h2>
           <p style={{ fontSize: 15, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 24px" }}>
-            Tell me what you're building and what's in the way. I'll give you an honest read,
-            usually within a day.
+            Tell me what you're building and what's in the way. Honest read within a day.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             {LINKS.map(({ label, href }) => (
