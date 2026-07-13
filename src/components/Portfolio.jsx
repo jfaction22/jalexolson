@@ -413,6 +413,7 @@ function LiveDot() {
 
 export default function Portfolio() {
   const rootRef = useRef(null);
+  const spotRef = useRef(null);
   const [perf, setPerf] = useState(null);
 
   useEffect(() => {
@@ -441,6 +442,62 @@ export default function Portfolio() {
       root.querySelectorAll(".pf-reveal").forEach((el) => el.classList.add("pf-in"));
     }
 
+    // Spotlight reel: scale each card by its distance from center,
+    // and auto-advance like a marquee until the user takes the wheel.
+    const spot = spotRef.current;
+    let spotCleanup = () => {};
+    if (spot) {
+      const cards = Array.from(spot.children);
+      let raf = 0;
+      const paint = () => {
+        raf = 0;
+        const mid = spot.scrollLeft + spot.clientWidth / 2;
+        for (const c of cards) {
+          const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid) / spot.clientWidth;
+          const t = Math.max(0, 1 - d * 2.2);
+          c.style.setProperty("--s", (0.88 + 0.16 * t).toFixed(3));
+          c.style.setProperty("--o", (0.55 + 0.45 * t).toFixed(3));
+          c.classList.toggle("pf-spot-live", t > 0.85);
+        }
+      };
+      const onScroll = () => { if (!raf) raf = requestAnimationFrame(paint); };
+      spot.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      paint();
+
+      let idx = 0;
+      let hold = 0;
+      const center = (i) => {
+        const c = cards[i];
+        spot.scrollTo({ left: c.offsetLeft - (spot.clientWidth - c.offsetWidth) / 2, behavior: "smooth" });
+      };
+      center(0);
+      let timer = 0;
+      if (!reduce) {
+        timer = window.setInterval(() => {
+          if (Date.now() < hold || document.hidden) return;
+          idx = (idx + 1) % cards.length;
+          center(idx);
+        }, 4200);
+        const pause = () => {
+          hold = Date.now() + 9000;
+          const mid = spot.scrollLeft + spot.clientWidth / 2;
+          idx = cards.reduce((best, c, i) =>
+            Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid) <
+            Math.abs(cards[best].offsetLeft + cards[best].offsetWidth / 2 - mid) ? i : best, 0);
+        };
+        spot.addEventListener("pointerdown", pause, { passive: true });
+        spot.addEventListener("wheel", pause, { passive: true });
+        spot.addEventListener("touchstart", pause, { passive: true });
+      }
+      spotCleanup = () => {
+        spot.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
+        if (timer) clearInterval(timer);
+        if (raf) cancelAnimationFrame(raf);
+      };
+    }
+
     // Live performance readout: the page measures itself.
     const measure = () => {
       const nav = performance.getEntriesByType("navigation")[0];
@@ -458,6 +515,7 @@ export default function Portfolio() {
 
     return () => {
       io && io.disconnect();
+      spotCleanup();
       window.removeEventListener("load", measure);
     };
   }, []);
@@ -720,9 +778,8 @@ export default function Portfolio() {
         }
         /* image placeholder: swap for a real <img loading="lazy"> later */
         .pf-ph {
-          border: 2px dashed rgba(232,99,28,0.45);
           border-radius: 14px;
-          background: rgba(232,99,28,0.05);
+          background: rgba(24,32,40,0.045);
           aspect-ratio: 4 / 3;
           display: grid;
           place-items: center;
@@ -737,18 +794,54 @@ export default function Portfolio() {
           }
           .pf-ph { aspect-ratio: 16 / 10; }
         }
-        /* ── the salon wall: every project, masonry-hung frames ── */
-        .pf-gallery { columns: 3; column-gap: 26px; }
-        .pf-gpiece {
-          break-inside: avoid;
-          margin-bottom: 34px;
-          position: relative;
-          display: block;
+        /* ── the spotlight reel: every project on a center-stage
+           carousel. Scroll-snap + a tiny scale-by-distance script;
+           the centered card is the exhibit, neighbors recede. ── */
+        .pf-spot {
+          display: flex;
+          gap: 22px;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          padding: 26px calc(50% - 190px) 34px;
+          scrollbar-width: none;
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
         }
+        .pf-spot::-webkit-scrollbar { display: none; }
+        .pf-spot-card {
+          flex: 0 0 380px;
+          scroll-snap-align: center;
+          position: relative;
+          background: ${C.card};
+          border: 1px solid ${C.line};
+          border-radius: 16px;
+          padding: 12px 12px 18px;
+          box-shadow: 0 10px 26px rgba(24,32,40,0.07);
+          transform: scale(var(--s, 0.88));
+          opacity: var(--o, 0.55);
+          transition: box-shadow .3s ease;
+          will-change: transform, opacity;
+        }
+        .pf-spot-live { box-shadow: 0 18px 40px rgba(24,32,40,0.13); }
+        .pf-gart {
+          aspect-ratio: 16 / 10;
+          display: grid;
+          place-items: center;
+          border-radius: 10px;
+          background: rgba(24,32,40,0.045);
+          font-family: ${C.mono};
+          font-size: 10px;
+          letter-spacing: 1.6px;
+          text-transform: uppercase;
+          color: ${C.faint};
+          overflow: hidden;
+        }
+        .pf-gart img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .pf-gretired .pf-gart img { filter: grayscale(1); opacity: 0.9; }
         .pf-gbadge {
           position: absolute;
           top: -10px;
-          left: 14px;
+          left: 16px;
           z-index: 2;
           font-family: ${C.mono};
           font-size: 9.5px;
@@ -760,50 +853,20 @@ export default function Portfolio() {
           border-radius: 999px;
           padding: 3px 9px;
         }
-        .pf-gframe {
-          position: relative;
-          background: #FFFFFF;
-          padding: 11px;
-          border: 1px solid ${C.line};
-          box-shadow: 0 2px 6px rgba(24,32,40,0.05), 0 14px 28px rgba(24,32,40,0.08);
-          transition: transform .2s ease, box-shadow .2s ease;
-        }
-        .pf-hydrated .pf-gpiece:hover .pf-gframe {
-          transform: translateY(-4px);
-          box-shadow: 0 4px 10px rgba(24,32,40,0.06), 0 22px 40px rgba(24,32,40,0.11);
-        }
-        /* the accent piece keeps the hero's orange offset panel */
-        .pf-gfeat .pf-gframe::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          transform: translate(9px, 9px);
-          background: ${C.accent};
-          opacity: 0.9;
-          z-index: -1;
-        }
-        .pf-gart {
-          aspect-ratio: 16 / 10;
-          display: grid;
-          place-items: center;
-          border: 2px dashed rgba(232,99,28,0.4);
-          background: rgba(232,99,28,0.05);
-          font-family: ${C.mono};
-          font-size: 10px;
-          letter-spacing: 1.6px;
-          text-transform: uppercase;
-          color: ${C.accentText};
-          overflow: hidden;
-        }
-        /* vary frame proportions so the wall hangs organically */
-        .pf-gpiece:nth-child(3n) .pf-gart { aspect-ratio: 4 / 3; }
-        .pf-gpiece:nth-child(4n) .pf-gart { aspect-ratio: 16 / 9; }
-        .pf-gart img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .pf-gretired .pf-gart img { filter: grayscale(1); opacity: 0.9; }
-        .pf-gplaque { padding: 14px 4px 0; }
+        .pf-gplaque { padding: 14px 6px 0; }
         .pf-gname { font-size: 15px; font-weight: 800; }
         .pf-gwhat { font-size: 12.5px; font-weight: 700; color: ${C.accentText}; margin: 4px 0 7px; }
-        .pf-gdesc { font-size: 12.5px; color: ${C.slate}; line-height: 1.6; margin: 0 0 9px; }
+        .pf-gdesc {
+          font-size: 12.5px;
+          color: ${C.slate};
+          line-height: 1.6;
+          margin: 0 0 9px;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          min-height: 4.3em;
+        }
         .pf-gmedium {
           font-family: ${C.mono};
           font-size: 10.5px;
@@ -811,11 +874,9 @@ export default function Portfolio() {
           text-transform: uppercase;
           color: ${C.faint};
         }
-        @media (max-width: 900px) {
-          .pf-gallery { columns: 2; }
-        }
         @media (max-width: 560px) {
-          .pf-gallery { columns: 1; }
+          .pf-spot { padding: 26px calc(50% - 150px) 30px; gap: 16px; }
+          .pf-spot-card { flex-basis: 300px; }
         }
         /* ── the versus ledger: rent vs own ── */
         .pf-vs { border-top: 1px solid ${C.line}; }
@@ -1003,8 +1064,7 @@ export default function Portfolio() {
           .pf-cta:hover { transform: none; }
           .pf-marquee-track { animation: none; }
           .pf-hl { animation: none; background-size: 100% 42%; }
-          .pf-gframe { transition: none; }
-          .pf-hydrated .pf-gpiece:hover .pf-gframe { transform: none; }
+          .pf-spot-card { transition: none; }
           .pf-hydrated .pf-b-tile:hover { transform: none; }
           .pf-hydrated .pf-cursor { animation: none; }
         }
@@ -1201,25 +1261,18 @@ export default function Portfolio() {
           <h2 id="work-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
             Things I built and operate
           </h2>
-          <div className="pf-gallery">
-            {GALLERY.map((p, i) => (
-              <div
-                key={p.name}
-                className={
-                  "pf-card pf-gpiece" + (i === 0 ? " pf-gfeat" : "") + (p.kind === "retired" ? " pf-gretired" : "")
-                }
-              >
+          <div className="pf-spot" ref={spotRef}>
+            {GALLERY.map((p) => (
+              <div key={p.name} className={"pf-spot-card" + (p.kind === "retired" ? " pf-gretired" : "")}>
                 <span className="pf-gbadge" style={{ color: BADGES[p.kind].color, borderColor: BADGES[p.kind].border }}>
                   {BADGES[p.kind].label}
                 </span>
-                <div className="pf-gframe">
-                  <div className="pf-gart">
-                    {p.img ? (
-                      <img src={p.img} alt={p.imgAlt || p.name} loading="lazy" decoding="async" />
-                    ) : (
-                      <span>Exhibit pending</span>
-                    )}
-                  </div>
+                <div className="pf-gart">
+                  {p.img ? (
+                    <img src={p.img} alt={p.imgAlt || p.name} loading="lazy" decoding="async" />
+                  ) : (
+                    <span>Exhibit pending</span>
+                  )}
                 </div>
                 <div className="pf-gplaque">
                   <div className="pf-gname">{p.name}</div>
