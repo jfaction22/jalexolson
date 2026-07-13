@@ -109,6 +109,10 @@ const SERVICES = [
     how:
       "Fast, findable, and maintained, with hosting handled if you want it. Built on React and Astro, the same stack as this page. I've run over a hundred sites for a decade; yours won't be my first rodeo.",
     tags: ["React", "Astro", "SEO", "Hosting"],
+    img: "/legendary-organics.webp",
+    imgW: 1000,
+    imgH: 511,
+    imgAlt: "Legendary Organics dispensary website hero: Be Legendary. Be You. with location shop buttons over a photo of the store interior",
     visual: "Screenshot: this site, which is also the sample",
   },
 ];
@@ -120,6 +124,8 @@ const PRODUCTS = [
     detail:
       "A Cloudflare Worker classifies traffic at the edge: search crawlers and AI crawlers get rendered HTML, humans get the SPA. Runs production traffic for client sites today, and it's the engine behind my SPA SEO service.",
     stack: ["Cloudflare Workers", "Docker", "Redis", "Coolify"],
+    img: "/rendrit-architecture.webp",
+    imgAlt: "SEO Vibe architecture comparison: third-party DNS proxy model versus the worker-owned model where the client's own Cloudflare Worker routes humans to the SPA and bots to the render API",
   },
   {
     name: "OleyBot",
@@ -154,6 +160,25 @@ const PRODUCTS = [
 
 // Side projects: smaller cards below the flagship products.
 // Verify the stack tags and details, these are drafts.
+// Rent vs own: the argument, one row at a time.
+const VERSUS = [
+  { dim: "Month one", rent: "Cheaper. That's the hook.", own: "An investment with an end date." },
+  { dim: "Year three", rent: "A $500/mo tool is $18,000 gone. You own nothing.", own: "Paid for itself. Costs $0/mo, forever." },
+  { dim: "Price increases", rent: "Whenever they feel like it.", own: "There is no price. You own it." },
+  { dim: "The feature you need", rent: "Upvote it. Wait. Hope.", own: "I build it. Usually that week." },
+  { dim: "Your data", rent: "Hostage in their cloud.", own: "On your server. Yours." },
+  { dim: "They get acquired", rent: "Sunset email, 30 days to migrate.", own: "Nothing happens. It's yours." },
+  { dim: "When you stop paying", rent: "Everything disappears.", own: "There's nothing to stop paying." },
+];
+
+// The receipt: bills eliminated by building instead of renting.
+const SAVINGS = [
+  { item: "Prerender.io", note: "replaced with Rendr.it, my own prerender fleet", amount: "$1,800" },
+  { item: "Flywheel hosting", note: "every site migrated to my own server", amount: "$5,100" },
+  { item: "Dedicated server", note: "right-sized, backups scripted to the cloud", amount: "$5,000" },
+  { item: "SaaS subscriptions (x18)", note: "replaced with software I built", amount: "$9,000" },
+];
+
 const SIDE_PROJECTS = [
   {
     name: "Build a Golf Sim (BAGS)",
@@ -234,33 +259,6 @@ const INCIDENTS = [
   },
   {
     id: "IR-05",
-    sev: "SEV-2",
-    title: "Prerender.io bill replaced with owned infrastructure",
-    problem: "third-party prerendering priced per render: $149/mo for a handful of client sites, with the $349 tier next as traffic grew",
-    fix: "built Rendr.it: Cloudflare Worker routing at the edge, self-hosted render containers on Docker behind Coolify",
-    outcome: "the recurring bill became a product I own and now sell",
-    saved: "$1,800+/yr",
-  },
-  {
-    id: "IR-06",
-    sev: "SEV-2",
-    title: "Hosting stack costing $12k/yr, rebuilt for $2k",
-    problem: "Flywheel at $425/mo on top of a $7,000/yr dedicated server, disk near capacity, backups eating local storage",
-    fix: "migrated every site off Flywheel, downgraded to a right-sized $2,000/yr server, stood up Coolify with Docker and PM2, scripted cloud backups to Google Drive",
-    outcome: "every site faster than before, on a fraction of the spend, deploying on git push",
-    saved: "$10,100+/yr",
-  },
-  {
-    id: "IR-07",
-    sev: "SEV-3",
-    title: "Subscription sprawl replaced with software I built",
-    problem: "$1,195/mo across 18 SaaS subscriptions: email platforms, scrapers, SEO suites, automation tools",
-    fix: "replaced the bulk with my own software: Bonsai Mail for Mailchimp and Instantly, SEO Vibe for Moz, my agent fleet for the Zapier and Apify jobs",
-    outcome: "the subscriptions that survive are the ones that earn their bill",
-    saved: "$9,000+/yr",
-  },
-  {
-    id: "IR-08",
     sev: "SEV-3",
     title: "A headless CMS and SEO pipeline, end to end",
     problem: "retail client's React app invisible to search: no structured data, and a script-stripping bug corrupting prerendered HTML in two layers",
@@ -275,6 +273,20 @@ const LINKS = [
   { label: "GitHub", href: "https://github.com/jalexolson" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/jalexolson" },
 ];
+
+// The salon wall: every project, one gallery.
+// kind: "live" | "side" | "retired" | "wip" drives the frame badge.
+const GALLERY = [
+  ...PRODUCTS.map((p) => ({ ...p, kind: p.retired ? "retired" : "live" })),
+  ...SIDE_PROJECTS.map((p) => ({ ...p, kind: "side" })),
+];
+
+const BADGES = {
+  live: { label: "Live", color: "#1F7A4D", border: "rgba(31,122,77,0.4)" },
+  side: { label: "Side project", color: "#5D6873", border: "#E3E6E3" },
+  retired: { label: "Retired", color: "#5D6873", border: "#E3E6E3" },
+  wip: { label: "In progress", color: "#A8440E", border: "rgba(232,99,28,0.5)" },
+};
 
 // ───────────── SMALL PIECES ─────────────
 
@@ -581,6 +593,11 @@ export default function Portfolio() {
         .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(5) { animation-delay: .28s; }
         .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(6) { animation-delay: .35s; }
         .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(7) { animation-delay: .42s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(8) { animation-delay: .49s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(9) { animation-delay: .56s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(10) { animation-delay: .63s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(11) { animation-delay: .7s; }
+        .pf-hydrated .pf-reveal.pf-in .pf-card:nth-child(12) { animation-delay: .77s; }
         /* nav underline sweep */
         .pf-nav a { position: relative; }
         .pf-nav a::after {
@@ -664,15 +681,38 @@ export default function Portfolio() {
           position: sticky;
           top: calc(74px + (var(--i) * 12px));
           min-height: min(64vh, 620px);
-          display: grid;
-          grid-template-columns: 1.05fr 0.95fr;
-          gap: 40px;
-          align-items: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 28px;
           background: ${C.card};
           border: 1px solid ${C.line};
           border-radius: 18px;
-          padding: 40px 44px;
+          padding: 36px 44px 40px;
         }
+        .pf-stack-text { text-align: center; max-width: 680px; margin: 0 auto; }
+        .pf-stack-caption {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          color: ${C.accentText};
+          font-family: ${C.mono};
+          font-size: 11px;
+          letter-spacing: 1.6px;
+          text-transform: uppercase;
+        }
+        .pf-stack-media { display: flex; justify-content: center; }
+        .pf-stack-media img {
+          width: auto;
+          height: auto;
+          max-width: 100%;
+          max-height: 460px;
+          border-radius: 14px;
+          border: 1px solid ${C.line};
+          box-shadow: 0 10px 30px rgba(24,32,40,0.10);
+        }
+        .pf-stack-media .pf-ph { width: 100%; max-width: 720px; aspect-ratio: 16 / 7; }
         .pf-stack-card:first-child {
           background: #FDF1E9;
           border-color: rgba(232,99,28,0.4);
@@ -691,63 +731,192 @@ export default function Portfolio() {
         }
         @media (max-width: 860px) {
           .pf-stack-card {
-            grid-template-columns: 1fr;
-            gap: 22px;
             min-height: 0;
-            padding: 26px 22px;
-            align-items: start;
+            gap: 20px;
+            padding: 26px 22px 30px;
           }
           .pf-ph { aspect-ratio: 16 / 10; }
         }
-        /* ── the ledger: products as expandable ruled rows ── */
-        .pf-ledger { border-top: 1px solid ${C.line}; }
-        .pf-lrow { border-bottom: 1px solid ${C.line}; }
-        .pf-lrow summary {
-          list-style: none;
-          cursor: pointer;
-          display: grid;
-          grid-template-columns: auto auto 1fr auto;
-          align-items: center;
-          gap: 14px;
-          padding: 16px 12px;
-          transition: background .2s ease;
+        /* ── the salon wall: every project, masonry-hung frames ── */
+        .pf-gallery { columns: 3; column-gap: 26px; }
+        .pf-gpiece {
+          break-inside: avoid;
+          margin-bottom: 34px;
+          position: relative;
+          display: block;
         }
-        .pf-lrow summary::-webkit-details-marker { display: none; }
-        .pf-hydrated .pf-lrow summary:hover { background: ${C.card}; }
-        .pf-lrow[open] summary { background: rgba(232,99,28,0.05); }
-        .pf-lbody { padding: 6px 12px 20px 34px; }
-        .pf-plus {
+        .pf-gbadge {
+          position: absolute;
+          top: -10px;
+          left: 14px;
+          z-index: 2;
           font-family: ${C.mono};
-          font-size: 18px;
-          color: ${C.accentText};
-          width: 22px;
-          text-align: center;
-          transition: transform .25s ease;
+          font-size: 9.5px;
+          font-weight: 700;
+          letter-spacing: 1.3px;
+          text-transform: uppercase;
+          background: #FFFFFF;
+          border: 1px solid;
+          border-radius: 999px;
+          padding: 3px 9px;
         }
-        details[open] > summary .pf-plus { transform: rotate(45deg); }
-        /* ── the bento: flagship products in varied tiles ── */
-        .pf-bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-        .pf-b-tile {
+        .pf-gframe {
+          position: relative;
+          background: #FFFFFF;
+          padding: 11px;
           border: 1px solid ${C.line};
-          border-radius: 14px;
-          background: ${C.card};
-          padding: 20px 22px;
-          transition: border-color .2s ease, transform .2s ease;
+          box-shadow: 0 2px 6px rgba(24,32,40,0.05), 0 14px 28px rgba(24,32,40,0.08);
+          transition: transform .2s ease, box-shadow .2s ease;
         }
-        .pf-hydrated .pf-b-tile:hover { border-color: ${C.accent}; transform: translateY(-2px); }
-        .pf-b-feat {
-          grid-column: span 2;
-          background: #FDF1E9;
-          border-color: rgba(232,99,28,0.4);
+        .pf-hydrated .pf-gpiece:hover .pf-gframe {
+          transform: translateY(-4px);
+          box-shadow: 0 4px 10px rgba(24,32,40,0.06), 0 22px 40px rgba(24,32,40,0.11);
+        }
+        /* the accent piece keeps the hero's orange offset panel */
+        .pf-gfeat .pf-gframe::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          transform: translate(9px, 9px);
+          background: ${C.accent};
+          opacity: 0.9;
+          z-index: -1;
+        }
+        .pf-gart {
+          aspect-ratio: 16 / 10;
+          display: grid;
+          place-items: center;
+          border: 2px dashed rgba(232,99,28,0.4);
+          background: rgba(232,99,28,0.05);
+          font-family: ${C.mono};
+          font-size: 10px;
+          letter-spacing: 1.6px;
+          text-transform: uppercase;
+          color: ${C.accentText};
+          overflow: hidden;
+        }
+        /* vary frame proportions so the wall hangs organically */
+        .pf-gpiece:nth-child(3n) .pf-gart { aspect-ratio: 4 / 3; }
+        .pf-gpiece:nth-child(4n) .pf-gart { aspect-ratio: 16 / 9; }
+        .pf-gart img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .pf-gretired .pf-gart img { filter: grayscale(1); opacity: 0.9; }
+        .pf-gplaque { padding: 14px 4px 0; }
+        .pf-gname { font-size: 15px; font-weight: 800; }
+        .pf-gwhat { font-size: 12.5px; font-weight: 700; color: ${C.accentText}; margin: 4px 0 7px; }
+        .pf-gdesc { font-size: 12.5px; color: ${C.slate}; line-height: 1.6; margin: 0 0 9px; }
+        .pf-gmedium {
+          font-family: ${C.mono};
+          font-size: 10.5px;
+          letter-spacing: 1.1px;
+          text-transform: uppercase;
+          color: ${C.faint};
         }
         @media (max-width: 900px) {
-          .pf-bento { grid-template-columns: 1fr 1fr; }
+          .pf-gallery { columns: 2; }
         }
         @media (max-width: 560px) {
-          .pf-bento { grid-template-columns: 1fr; }
-          .pf-b-feat { grid-column: auto; }
+          .pf-gallery { columns: 1; }
         }
-        /* ── the terminal: incidents as a live console ── */
+        /* ── the versus ledger: rent vs own ── */
+        .pf-vs { border-top: 1px solid ${C.line}; }
+        .pf-vs-head {
+          display: grid;
+          grid-template-columns: 150px 1fr 1fr;
+          gap: 18px;
+          padding: 12px 12px 10px;
+          border-bottom: 1px solid ${C.line};
+          font-family: ${C.mono};
+          font-size: 11px;
+          letter-spacing: 1.6px;
+          text-transform: uppercase;
+        }
+        .pf-vs-row {
+          display: grid;
+          grid-template-columns: 150px 1fr 1fr;
+          gap: 18px;
+          padding: 14px 12px;
+          border-bottom: 1px solid ${C.line};
+          align-items: baseline;
+        }
+        .pf-vs-dim {
+          font-family: ${C.mono};
+          font-size: 11px;
+          letter-spacing: 1.2px;
+          text-transform: uppercase;
+          color: ${C.faint};
+        }
+        .pf-vs-rent { font-size: 14px; color: ${C.faint}; }
+        .pf-vs-own { font-size: 14px; font-weight: 700; }
+        .pf-vs-x { color: ${C.faint}; margin-right: 7px; }
+        .pf-vs-c { color: ${C.accent}; margin-right: 7px; }
+        @media (max-width: 700px) {
+          .pf-vs-head { display: none; }
+          .pf-vs-row { grid-template-columns: 1fr; gap: 6px; padding: 16px 12px; }
+        }
+        /* ── the receipt: savings as a thermal-paper artifact ── */
+        .pf-receipt-wrap { display: flex; justify-content: center; padding: 6px 0 10px; }
+        .pf-receipt {
+          width: min(430px, 100%);
+          background: #FFFFFF;
+          font-family: ${C.mono};
+          color: ${C.ink};
+          padding: 30px 26px 42px;
+          position: relative;
+          transform: rotate(-1.2deg);
+          filter: drop-shadow(0 18px 36px rgba(24,32,40,0.16));
+          clip-path: polygon(
+            0 0, 100% 0,
+            100% calc(100% - 11px), 97.5% 100%, 95% calc(100% - 11px),
+            92.5% 100%, 90% calc(100% - 11px), 87.5% 100%, 85% calc(100% - 11px),
+            82.5% 100%, 80% calc(100% - 11px), 77.5% 100%, 75% calc(100% - 11px),
+            72.5% 100%, 70% calc(100% - 11px), 67.5% 100%, 65% calc(100% - 11px),
+            62.5% 100%, 60% calc(100% - 11px), 57.5% 100%, 55% calc(100% - 11px),
+            52.5% 100%, 50% calc(100% - 11px), 47.5% 100%, 45% calc(100% - 11px),
+            42.5% 100%, 40% calc(100% - 11px), 37.5% 100%, 35% calc(100% - 11px),
+            32.5% 100%, 30% calc(100% - 11px), 27.5% 100%, 25% calc(100% - 11px),
+            22.5% 100%, 20% calc(100% - 11px), 17.5% 100%, 15% calc(100% - 11px),
+            12.5% 100%, 10% calc(100% - 11px), 7.5% 100%, 5% calc(100% - 11px),
+            2.5% 100%, 0 calc(100% - 11px)
+          );
+        }
+        .pf-r-head { text-align: center; margin-bottom: 16px; }
+        .pf-r-title { font-size: 15px; font-weight: 800; letter-spacing: 3px; }
+        .pf-r-sub { font-size: 11px; color: ${C.faint}; letter-spacing: 1.6px; margin-top: 4px; }
+        .pf-r-rule { border: none; border-top: 1.5px dashed rgba(24,32,40,0.3); margin: 14px 0; }
+        .pf-r-row { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 700; }
+        .pf-r-dots { flex: 1; border-bottom: 2px dotted rgba(24,32,40,0.35); transform: translateY(-3px); }
+        .pf-r-note { font-size: 11.5px; color: ${C.faint}; margin: 3px 0 12px; }
+        .pf-r-total { display: flex; align-items: baseline; gap: 8px; font-size: 15px; font-weight: 800; }
+        .pf-r-total .pf-r-amt { font-size: 22px; letter-spacing: -0.5px; }
+        .pf-r-forever { text-align: right; font-size: 11px; color: ${C.accentText}; margin-top: 4px; letter-spacing: 1.2px; }
+        .pf-r-stamp {
+          position: absolute;
+          top: 74px;
+          right: 16px;
+          transform: rotate(8deg);
+          border: 3px solid ${C.accent};
+          border-radius: 6px;
+          color: ${C.accent};
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 2px;
+          padding: 5px 9px;
+          text-align: center;
+          opacity: 0.85;
+          user-select: none;
+        }
+        .pf-r-barcode {
+          height: 34px;
+          margin: 16px auto 8px;
+          width: 78%;
+          background: repeating-linear-gradient(90deg,
+            ${C.ink} 0 2px, transparent 2px 5px,
+            ${C.ink} 5px 6px, transparent 6px 10px,
+            ${C.ink} 10px 13px, transparent 13px 15px,
+            ${C.ink} 15px 16px, transparent 16px 21px);
+        }
+        .pf-r-foot { text-align: center; font-size: 10.5px; letter-spacing: 1.4px; color: ${C.faint}; }
+                /* ── the terminal: incidents as a live console ── */
         .pf-term {
           background: ${C.panel};
           border-radius: 14px;
@@ -834,7 +1003,8 @@ export default function Portfolio() {
           .pf-cta:hover { transform: none; }
           .pf-marquee-track { animation: none; }
           .pf-hl { animation: none; background-size: 100% 42%; }
-          .pf-plus, .pf-lrow summary, .pf-b-tile { transition: none; }
+          .pf-gframe { transition: none; }
+          .pf-hydrated .pf-gpiece:hover .pf-gframe { transform: none; }
           .pf-hydrated .pf-b-tile:hover { transform: none; }
           .pf-hydrated .pf-cursor { animation: none; }
         }
@@ -881,7 +1051,7 @@ export default function Portfolio() {
                 I build <span className="pf-hl">bespoke apps</span> tailored to what people actually want.
               </h1>
               <p style={{ fontSize: 17, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 26px" }}>
-                I have 12+ years building for the web. I sold off a WordPress agency that had over 100 clients in its heyday.
+                I have 14+ years building for the web. I sold off a WordPress agency that had over 100 clients in its heyday.
                 I've built 5 different SaaS products, dozens of AI automations and agents.
               </p>
               <div>
@@ -946,52 +1116,45 @@ export default function Portfolio() {
           <div className="pf-stack">
             {SERVICES.map((s, i) => (
               <div key={s.benefit} className="pf-stack-card" style={{ "--i": i }}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, color: C.accentText }}>
-                    <Icon name={s.icon} />
-                    <span style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 1.4, textTransform: "uppercase" }}>
-                      {s.label}
-                    </span>
-                  </div>
-                  <div style={{ fontWeight: 800, fontSize: "clamp(24px, 3.6vw, 40px)", letterSpacing: "-0.8px", lineHeight: 1.1, marginBottom: 16 }}>
+                <div className="pf-stack-text">
+                  <div style={{ fontWeight: 800, fontSize: "clamp(24px, 3.4vw, 36px)", letterSpacing: "-0.7px", lineHeight: 1.12, marginBottom: 12 }}>
                     {s.benefit}
                   </div>
-                  <p style={{ fontSize: 15, color: C.slate, lineHeight: 1.65, margin: "0 0 16px", maxWidth: 520 }}>{s.how}</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  <p style={{ fontSize: 14.5, color: C.slate, lineHeight: 1.65, margin: "0 auto 14px", maxWidth: 600 }}>{s.how}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
                     {s.tags.map((t) => (
                       <Chip key={t}>{t}</Chip>
                     ))}
                   </div>
                 </div>
-                {s.img ? (
-                  <img
-                    src={s.img}
-                    alt={s.imgAlt}
-                    width={s.imgW}
-                    height={s.imgH}
-                    loading="lazy"
-                    decoding="async"
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      borderRadius: 14,
-                      border: `1px solid ${C.line}`,
-                      boxShadow: "0 10px 30px rgba(24,32,40,0.10)",
-                    }}
-                  />
-                ) : (
-                  <div className="pf-ph">
-                    <div>
-                      <div style={{ color: C.accentText, marginBottom: 10, display: "flex", justifyContent: "center" }}>
-                        <Icon name={s.icon} />
+                <div className="pf-stack-media">
+                  {s.img ? (
+                    <img
+                      src={s.img}
+                      alt={s.imgAlt}
+                      width={s.imgW}
+                      height={s.imgH}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="pf-ph">
+                      <div>
+                        <div style={{ color: C.accentText, marginBottom: 10, display: "flex", justifyContent: "center" }}>
+                          <Icon name={s.icon} />
+                        </div>
+                        <div style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: C.accentText, marginBottom: 6 }}>
+                          Image placeholder
+                        </div>
+                        <div style={{ fontFamily: C.mono, fontSize: 12, color: C.faint }}>{s.visual}</div>
                       </div>
-                      <div style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: C.accentText, marginBottom: 6 }}>
-                        Image placeholder
-                      </div>
-                      <div style={{ fontFamily: C.mono, fontSize: 12, color: C.faint }}>{s.visual}</div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+                <div className="pf-stack-caption">
+                  <Icon name={s.icon} />
+                  <span>{s.label}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -1038,57 +1201,33 @@ export default function Portfolio() {
           <h2 id="work-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
             Things I built and operate
           </h2>
-          <div className="pf-bento">
-            {PRODUCTS.map((p, i) => (
-              <article key={p.name} className={i === 0 ? "pf-card pf-b-tile pf-b-feat" : "pf-card pf-b-tile"}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  {p.retired ? (
-                    <span
-                      aria-hidden="true"
-                      style={{ display: "inline-block", width: 8, height: 8, borderRadius: 999, background: C.faint }}
-                    />
-                  ) : (
-                    <LiveDot />
-                  )}
-                  <h3 style={{ fontSize: i === 0 ? 20 : 16, fontWeight: 800, margin: 0 }}>{p.name}</h3>
+          <div className="pf-gallery">
+            {GALLERY.map((p, i) => (
+              <div
+                key={p.name}
+                className={
+                  "pf-card pf-gpiece" + (i === 0 ? " pf-gfeat" : "") + (p.kind === "retired" ? " pf-gretired" : "")
+                }
+              >
+                <span className="pf-gbadge" style={{ color: BADGES[p.kind].color, borderColor: BADGES[p.kind].border }}>
+                  {BADGES[p.kind].label}
+                </span>
+                <div className="pf-gframe">
+                  <div className="pf-gart">
+                    {p.img ? (
+                      <img src={p.img} alt={p.imgAlt || p.name} loading="lazy" decoding="async" />
+                    ) : (
+                      <span>Exhibit pending</span>
+                    )}
+                  </div>
                 </div>
-                <div style={{ fontSize: 13.5, fontWeight: 700, color: C.accentText, marginBottom: 10 }}>{p.what}</div>
-                <p style={{ fontSize: i === 0 ? 14 : 13.5, color: C.slate, lineHeight: 1.6, margin: "0 0 14px" }}>{p.detail}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {p.stack.map((t) => (
-                    <Chip key={t}>{t}</Chip>
-                  ))}
+                <div className="pf-gplaque">
+                  <div className="pf-gname">{p.name}</div>
+                  {p.what ? <div className="pf-gwhat">{p.what}</div> : null}
+                  <p className="pf-gdesc">{p.detail}</p>
+                  <div className="pf-gmedium">Medium · {p.stack.join(" · ")}</div>
                 </div>
-              </article>
-            ))}
-          </div>
-
-          {/* side projects: compact rows in the same ledger */}
-          <div
-            style={{
-              fontFamily: C.mono,
-              fontSize: 11,
-              letterSpacing: 1.5,
-              textTransform: "uppercase",
-              color: C.faint,
-              margin: "34px 0 0",
-            }}
-          >
-            Side projects and experiments
-          </div>
-          <div className="pf-ledger" style={{ marginTop: 12 }}>
-            {SIDE_PROJECTS.map((p) => (
-              <details key={p.name} className="pf-card pf-lrow">
-                <summary>
-                  <span aria-hidden="true" style={{ fontFamily: C.mono, fontSize: 13, color: C.accentText }}>▸</span>
-                  <span style={{ fontSize: 14.5, fontWeight: 700 }}>{p.name}</span>
-                  <span />
-                  <span className="pf-plus" aria-hidden="true">+</span>
-                </summary>
-                <div className="pf-lbody">
-                  <p style={{ fontSize: 13.5, color: C.slate, lineHeight: 1.6, margin: 0, maxWidth: 640 }}>{p.detail}</p>
-                </div>
-              </details>
+              </div>
             ))}
           </div>
         </section>
@@ -1128,6 +1267,96 @@ export default function Portfolio() {
         </section>
 
         </main>
+
+        {/* build vs buy: the argument */}
+        <section aria-labelledby="vs-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
+          <Eyebrow>Stop renting software</Eyebrow>
+          <h2 id="vs-title" style={{ fontSize: "clamp(26px, 4.2vw, 40px)", fontWeight: 800, letterSpacing: -0.8, margin: "0 0 10px" }}>
+            Build <span style={{ color: C.accentText }}>&gt;</span> Buy
+          </h2>
+          <p style={{ fontSize: 15.5, color: C.slate, lineHeight: 1.7, maxWidth: 620, margin: "0 0 26px" }}>
+            You're paying rent on software. Every month, forever, with nothing to show for it
+            the day you stop. I build you the tool once, tailored to how your business actually
+            works. Then it's yours: no seats, no tiers, no "updates to our pricing" emails. Ever.
+          </p>
+          <div className="pf-vs">
+            <div className="pf-vs-head">
+              <span />
+              <span style={{ color: C.faint }}>Rent it</span>
+              <span style={{ color: C.accentText, fontWeight: 700 }}>Own it</span>
+            </div>
+            {VERSUS.map((v) => (
+              <div key={v.dim} className="pf-vs-row">
+                <span className="pf-vs-dim">{v.dim}</span>
+                <span className="pf-vs-rent"><span className="pf-vs-x" aria-hidden="true">✗</span>{v.rent}</span>
+                <span className="pf-vs-own"><span className="pf-vs-c" aria-hidden="true">✓</span>{v.own}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 22px", padding: "22px 12px 0" }}>
+            <div style={{ fontSize: 14, color: C.slate, maxWidth: 520 }}>
+              Fair is fair: a few tools earn their fee. It's the other six line items on your
+              card statement we're coming for.
+            </div>
+            <a
+              href="mailto:jack@jalexolson.com?subject=My%20worst%20subscription"
+              style={{
+                fontFamily: C.mono,
+                fontSize: 13,
+                textDecoration: "none",
+                padding: "8px 16px",
+                borderRadius: 8,
+                border: `1px solid ${C.accent}`,
+                background: C.accentSoft,
+                color: C.accentText,
+                boxShadow: `3px 3px 0 ${C.accent}`,
+              }}
+            >
+              Send me your worst subscription ↗
+            </a>
+          </div>
+        </section>
+
+        {/* the receipt: build vs buy, in dollars */}
+        <section aria-labelledby="savings-title" className="pf-reveal" style={{ padding: "26px 0 54px", position: "relative" }}>
+          <div className="pf-ghost" aria-hidden="true">SAVED</div>
+          <Eyebrow>Proof</Eyebrow>
+          <h2 id="savings-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 8px" }}>
+            The receipts
+          </h2>
+          <p style={{ fontSize: 15, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 26px" }}>
+            Bills I stopped paying by building the tool instead.
+          </p>
+          <div className="pf-receipt-wrap">
+            <div className="pf-receipt">
+              <div className="pf-r-stamp" aria-hidden="true">OWNED<br />NOT RENTED</div>
+              <div className="pf-r-head">
+                <div className="pf-r-title">J ALEX OLSON</div>
+                <div className="pf-r-sub">BUILD &gt; BUY · COLORADO, USA</div>
+              </div>
+              <hr className="pf-r-rule" />
+              {SAVINGS.map((s) => (
+                <div key={s.item}>
+                  <div className="pf-r-row">
+                    <span>{s.item.toUpperCase()}</span>
+                    <span className="pf-r-dots" aria-hidden="true" />
+                    <span>{s.amount}</span>
+                  </div>
+                  <div className="pf-r-note">{s.note}</div>
+                </div>
+              ))}
+              <hr className="pf-r-rule" />
+              <div className="pf-r-total">
+                <span>TOTAL SAVED / YEAR</span>
+                <span className="pf-r-dots" aria-hidden="true" />
+                <span className="pf-r-amt">$20,900</span>
+              </div>
+              <div className="pf-r-forever">EVERY YEAR. FOREVER.</div>
+              <div className="pf-r-barcode" aria-hidden="true" />
+              <div className="pf-r-foot">YOUR STACK PROBABLY HAS ONE OF THESE IN IT</div>
+            </div>
+          </div>
+        </section>
 
         {/* contact */}
         <footer id="contact" style={{ padding: "26px 0 64px", borderTop: `1px solid ${C.line}` }}>
