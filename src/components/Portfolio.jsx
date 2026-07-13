@@ -70,6 +70,10 @@ const SERVICES = [
     how:
       "Slow pages bleed sales and Google rankings. I find the bloat and cut it. This page is the demo: run Lighthouse on it right now.",
     tags: ["Lighthouse", "Core Web Vitals", "Bundle analysis"],
+    img: "/lighthouse-100.webp",
+    imgW: 1000,
+    imgH: 689,
+    imgAlt: "PageSpeed Insights report scoring 100 in Performance, Accessibility, Best Practices, and SEO, with 0.8s First Contentful Paint, 1.8s Largest Contentful Paint, 0ms blocking time, and zero layout shift",
     visual: "Screenshot: Lighthouse 100 / 100 / 100 / 100",
   },
   {
@@ -119,7 +123,6 @@ const PRODUCTS = [
   },
   {
     name: "OleyBot",
-    arch: true,
     what: "Licensed desktop automation for streamers and TCG collectors",
     detail:
       "Commercial desktop app with license validation, gated binary distribution through Supabase Edge Functions and signed URLs, and Stripe billing. If your product needs licensing or payments, I've built that end to end.",
@@ -228,6 +231,41 @@ const INCIDENTS = [
     problem: "published Next.js CVE, a hundred client properties to check by hand",
     fix: "scripted framework fingerprinting across every property, patched the exposed sites",
     outcome: "everything patched inside the disclosure window, repeatable script for the next CVE",
+  },
+  {
+    id: "IR-05",
+    sev: "SEV-2",
+    title: "Prerender.io bill replaced with owned infrastructure",
+    problem: "third-party prerendering priced per render: $149/mo for a handful of client sites, with the $349 tier next as traffic grew",
+    fix: "built Rendr.it: Cloudflare Worker routing at the edge, self-hosted render containers on Docker behind Coolify",
+    outcome: "the recurring bill became a product I own and now sell",
+    saved: "$1,800+/yr",
+  },
+  {
+    id: "IR-06",
+    sev: "SEV-2",
+    title: "Hosting stack costing $12k/yr, rebuilt for $2k",
+    problem: "Flywheel at $425/mo on top of a $7,000/yr dedicated server, disk near capacity, backups eating local storage",
+    fix: "migrated every site off Flywheel, downgraded to a right-sized $2,000/yr server, stood up Coolify with Docker and PM2, scripted cloud backups to Google Drive",
+    outcome: "every site faster than before, on a fraction of the spend, deploying on git push",
+    saved: "$10,100+/yr",
+  },
+  {
+    id: "IR-07",
+    sev: "SEV-3",
+    title: "Subscription sprawl replaced with software I built",
+    problem: "$1,195/mo across 18 SaaS subscriptions: email platforms, scrapers, SEO suites, automation tools",
+    fix: "replaced the bulk with my own software: Bonsai Mail for Mailchimp and Instantly, SEO Vibe for Moz, my agent fleet for the Zapier and Apify jobs",
+    outcome: "the subscriptions that survive are the ones that earn their bill",
+    saved: "$9,000+/yr",
+  },
+  {
+    id: "IR-08",
+    sev: "SEV-3",
+    title: "A headless CMS and SEO pipeline, end to end",
+    problem: "retail client's React app invisible to search: no structured data, and a script-stripping bug corrupting prerendered HTML in two layers",
+    fix: "Sanity Studio on their subdomain, JSON-LD structured data layer, fixed the prerender proxy, added AI crawler support",
+    outcome: "marketers publish in Sanity; crawlers get complete structured HTML at the edge",
   },
 ];
 
@@ -702,11 +740,6 @@ export default function Portfolio() {
           background: #FDF1E9;
           border-color: rgba(232,99,28,0.4);
         }
-        /* the arch tile: one bento window echoing the hero frame */
-        .pf-b-arch {
-          border-radius: 999px 999px 14px 14px;
-          padding-top: 56px;
-        }
         @media (max-width: 900px) {
           .pf-bento { grid-template-columns: 1fr 1fr; }
         }
@@ -754,6 +787,7 @@ export default function Portfolio() {
         }
         .pf-term-k { color: ${C.accent}; }
         .pf-term-ok { color: #3FCF8E; }
+        .pf-term-saved { color: #3FCF8E; font-weight: 700; }
         .pf-cursor { display: inline-block; width: 8px; background: #C7D0D8; }
         .pf-hydrated .pf-cursor { animation: pf-blink 1.1s steps(1) infinite; }
         @keyframes pf-blink { 50% { opacity: 0; } }
@@ -833,12 +867,6 @@ export default function Portfolio() {
         <section aria-labelledby="hero-title" style={{ padding: "64px 0 56px" }}>
           <div className="pf-hero">
             <div className="pf-intro">
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 18 }}>
-                <Chip tone="green">
-                  <LiveDot /> <span style={{ marginLeft: 6 }}>Available for freelance work</span>
-                </Chip>
-                <Chip tone="line">React · TypeScript · performance</Chip>
-              </div>
               <Eyebrow>Alex Olson · Frontend engineer · Colorado</Eyebrow>
               <h1
                 id="hero-title"
@@ -880,10 +908,10 @@ export default function Portfolio() {
           {/* stats strip: the resume paragraph, as numbers */}
           <div className="pf-stats">
             {[
-              ["12+", "years building for the web"],
+              ["14+", "years building for the web"],
               ["5", "SaaS products shipped"],
-              ["100+", "sites run in production"],
-              ["6,844", "container restarts survived"],
+              ["150+", "sites managed"],
+              ["$20k+", "yearly costs cut with my own tools"],
             ].map(([n, l]) => (
               <div key={l} className="pf-stat">
                 <div className="pf-stat-n">{n}</div>
@@ -1012,12 +1040,7 @@ export default function Portfolio() {
           </h2>
           <div className="pf-bento">
             {PRODUCTS.map((p, i) => (
-              <article
-                key={p.name}
-                className={
-                  "pf-card pf-b-tile" + (i === 0 ? " pf-b-feat" : "") + (p.arch ? " pf-b-arch" : "")
-                }
-              >
+              <article key={p.name} className={i === 0 ? "pf-card pf-b-tile pf-b-feat" : "pf-card pf-b-tile"}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                   {p.retired ? (
                     <span
@@ -1095,7 +1118,7 @@ export default function Portfolio() {
                   <div className="pf-term-kv"><span className="pf-term-k">fix</span><span>{ir.fix}</span></div>
                   <div className="pf-term-kv">
                     <span className="pf-term-k">outcome</span>
-                    <span>{ir.outcome} <span className="pf-term-ok">✓ resolved</span></span>
+                    <span>{ir.outcome} <span className="pf-term-ok">✓ resolved</span>{ir.saved ? <span className="pf-term-saved"> [{ir.saved} saved]</span> : null}</span>
                   </div>
                 </div>
               ))}
