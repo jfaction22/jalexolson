@@ -124,11 +124,13 @@ const PRODUCTS = [
     detail:
       "A Cloudflare Worker classifies traffic at the edge: search crawlers and AI crawlers get rendered HTML, humans get the SPA. Runs production traffic for client sites today, and it's the engine behind my SPA SEO service.",
     stack: ["Cloudflare Workers", "Docker", "Redis", "Coolify"],
-    img: "/rendrit-architecture.webp",
-    imgAlt: "SEO Vibe architecture comparison: third-party DNS proxy model versus the worker-owned model where the client's own Cloudflare Worker routes humans to the SPA and bots to the render API",
+    img: "/rendrit-dashboard.webp",
+    imgAlt: "Rendr.it prerender dashboard: 610 active URLs, 100 percent success rate, prerender activity and cache hit rate charts, 5,781 pages tracked",
   },
   {
     name: "OleyBot",
+    img: "/oleybot.webp",
+    imgAlt: "OleyBot landing page: Be first to the drop, with the Discord restock monitor dashboard showing live watching status and recent catches",
     what: "Licensed desktop automation for streamers and TCG collectors",
     detail:
       "Commercial desktop app with license validation, gated binary distribution through Supabase Edge Functions and signed URLs, and Stripe billing. If your product needs licensing or payments, I've built that end to end.",
@@ -136,6 +138,8 @@ const PRODUCTS = [
   },
   {
     name: "Bonsai Mail",
+    img: "/bonsai-mail.webp",
+    imgAlt: "Bonsai Mail campaign analytics: 6.7K emails sent, 4.44 percent reply rate, 44 opportunities worth 22,000 dollars",
     what: "Cold email platform with multi-tenant OAuth",
     detail:
       "Sending infrastructure on Microsoft 365 and Google OAuth. I migrated the single-tenant Azure app registration to multi-tenant and hardened token refresh and delivery paths.",
@@ -150,6 +154,8 @@ const PRODUCTS = [
   },
   {
     name: "Levotate",
+    img: "/levotate.webp",
+    imgAlt: "Levotate agency site: next-level lead generation for local businesses, with a client website preview",
     retired: true,
     what: "My web development and marketing agency, now sunset",
     detail:
@@ -182,6 +188,8 @@ const SAVINGS = [
 const SIDE_PROJECTS = [
   {
     name: "Build a Golf Sim (BAGS)",
+    img: "/bags.webp",
+    imgAlt: "buildagolfsim.com component builder comparing launch monitors, projectors, and screens across retailers with live prices and compatibility checks",
     detail:
       "buildagolfsim.com. Specs a complete golf simulator around your room and budget. No spreadsheet math, no guesswork.",
     stack: ["React", "Interactive builder"],
@@ -193,13 +201,17 @@ const SIDE_PROJECTS = [
     stack: ["React", "Internal tools"],
   },
   {
-    name: "Perfect Campsite Finder",
+    name: "CampSpot Finder",
     detail:
-      "Cross references public land, terrain, and drive time to find campsites worth the trip, not the first pin on the map.",
+      "Ranks Colorado camping lots by sun position, shade, hookups, and ten rating criteria, with month-by-month sun modeling and illustrated campground maps.",
     stack: ["React", "Maps", "Geo data"],
+    img: "/campspot-finder.webp",
+    imgAlt: "CampSpot Finder ranking Colorado camping lots by overall score, with June sun position, shade and accessibility ratings, and an illustrated Jellystone Park campground map",
   },
   {
     name: "Workout Tracker",
+    img: "/workout-tracker.webp",
+    imgAlt: "Spartan 300 workout tracker with progress bars and rep counters for pull-ups, deadlifts, and push-ups",
     detail:
       "A no fluff training log: programs, sets, progressive overload. Fast enough to use between sets.",
     stack: ["React", "Mobile-first"],
