@@ -44,6 +44,10 @@ const SERVICES = [
     how:
       "Custom web apps, built and shipped: designed, deployed, documented, and handed over so you own it outright instead of renting another subscription.",
     tags: ["React", "TypeScript", "Vite", "TanStack"],
+    img: "/crm-dashboard.webp",
+    imgW: 1000,
+    imgH: 667,
+    imgAlt: "Custom CRM dashboard with pipeline, activity feed, and sales performance widgets",
     visual: "App screenshot: a custom dashboard in production",
   },
   {
@@ -53,6 +57,10 @@ const SERVICES = [
     how:
       "Invoice entry, report chasing, status updates, alerts: if your team does it by hand every week, I can probably automate it. I run fleets of these bots for my own products.",
     tags: ["LLM APIs", "Workflows", "Bots", "Node"],
+    img: "/agent-workflow.webp",
+    imgW: 1000,
+    imgH: 527,
+    imgAlt: "Multi-agent content automation workflow with research agents, planners, and writers wired together in n8n",
     visual: "Diagram: manual workflow before / automated after",
   },
   {
@@ -71,6 +79,10 @@ const SERVICES = [
     how:
       "If Google and AI assistants can't read your app, you're invisible to buyers already looking for you. I built a prerendering service for exactly this problem; it runs production traffic today.",
     tags: ["Prerendering", "Structured data", "Edge routing"],
+    img: "/seo-vibe-hero.webp",
+    imgW: 1000,
+    imgH: 562,
+    imgAlt: "SEO Vibe landing page showing what Google sees before and after prerendering: an empty root div versus full content",
     visual: "Screenshot: search results before / after prerendering",
   },
   {
@@ -80,6 +92,10 @@ const SERVICES = [
     how:
       "Stripe billing, Google and Microsoft login, licensing: the plumbing between demo and business. I've wired all of it for my own paying products.",
     tags: ["Stripe", "OAuth 2.0", "Supabase", "Cloudflare"],
+    img: "/auth-providers.webp",
+    imgW: 1000,
+    imgH: 443,
+    imgAlt: "Authentication provider dashboard with email, phone, SAML, Apple, Azure, GitHub, and a dozen more sign-in methods enabled",
     visual: "Screenshot: checkout and sign-in flow",
   },
   {
@@ -103,6 +119,7 @@ const PRODUCTS = [
   },
   {
     name: "OleyBot",
+    arch: true,
     what: "Licensed desktop automation for streamers and TCG collectors",
     detail:
       "Commercial desktop app with license validation, gated binary distribution through Supabase Edge Functions and signed URLs, and Stripe billing. If your product needs licensing or payments, I've built that end to end.",
@@ -214,28 +231,6 @@ const INCIDENTS = [
   },
 ];
 
-const SKILLS = [
-  {
-    icon: "monitor",
-    layer: "Interface",
-    items: ["React", "TypeScript", "Vite", "TanStack Query/Router", "Tailwind", "CSS you can read"],
-  },
-  {
-    icon: "database",
-    layer: "Content and data",
-    items: ["Sanity", "Supabase", "Postgres", "REST and edge APIs", "Structured data / JSON-LD"],
-  },
-  {
-    icon: "globe",
-    layer: "Edge and delivery",
-    items: ["Cloudflare Workers", "Pages", "Caching strategy", "Prerendering", "DNS"],
-  },
-  {
-    icon: "terminal",
-    layer: "Operations",
-    items: ["Docker", "PM2", "Coolify", "Linux server admin", "AI agents and bot fleets", "Monitoring and alerting"],
-  },
-];
 
 const LINKS = [
   { label: "Email", href: "mailto:jack@jalexolson.com" },
@@ -270,29 +265,10 @@ const ICON_PATHS = {
     </>
   ),
   plug: <path d="M9 6V2M15 6V2M7 6h10v4a5 5 0 0 1-10 0V6ZM12 15v7" />,
-  monitor: (
-    <>
-      <rect x="3" y="4" width="18" height="13" rx="2" />
-      <path d="M9 21h6M12 17v4" />
-    </>
-  ),
-  database: (
-    <>
-      <ellipse cx="12" cy="5" rx="8" ry="3" />
-      <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
-      <path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" />
-    </>
-  ),
   globe: (
     <>
       <circle cx="12" cy="12" r="9" />
       <path d="M3 12h18M12 3a13.5 13.5 0 0 1 0 18 13.5 13.5 0 0 1 0-18" />
-    </>
-  ),
-  terminal: (
-    <>
-      <rect x="3" y="4" width="18" height="16" rx="2" />
-      <path d="m7 9 3 3-3 3M13 15h4" />
     </>
   ),
 };
@@ -316,10 +292,30 @@ function Icon({ name }) {
   );
 }
 
+function ArchMark() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="12"
+      height="10"
+      viewBox="0 0 12 10"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      style={{ flexShrink: 0 }}
+    >
+      <path d="M1.5 10 V6 A4.5 4.5 0 0 1 10.5 6 V10" />
+    </svg>
+  );
+}
+
 function Eyebrow({ children }) {
   return (
     <div
       style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
         fontFamily: C.mono,
         fontSize: 12,
         letterSpacing: 2.2,
@@ -328,6 +324,7 @@ function Eyebrow({ children }) {
         marginBottom: 14,
       }}
     >
+      <ArchMark />
       {children}
     </div>
   );
@@ -428,10 +425,14 @@ export default function Portfolio() {
       }}
     >
       <style>{`
-        /* subtle dot grid over the paper background */
+        /* dot grid + faint arch tattoo, staggered like a brick pattern */
         .pf-shell {
-          background-image: radial-gradient(rgba(24,32,40,0.075) 1px, transparent 1px);
-          background-size: 22px 22px;
+          background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M29 42 V35 a7 7 0 0 1 14 0 V42' fill='none' stroke='%23E8631C' stroke-opacity='0.09' stroke-width='1.5'/%3E%3C/svg%3E"),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M29 42 V35 a7 7 0 0 1 14 0 V42' fill='none' stroke='%23E8631C' stroke-opacity='0.09' stroke-width='1.5'/%3E%3C/svg%3E"),
+            radial-gradient(rgba(24,32,40,0.075) 1px, transparent 1px);
+          background-size: 144px 144px, 144px 144px, 22px 22px;
+          background-position: 0 0, 72px 72px, 0 0;
           overflow-x: clip;
         }
         .pf-shell ::selection { background: rgba(232,99,28,0.25); }
@@ -499,25 +500,26 @@ export default function Portfolio() {
         .pf-intro > *:nth-child(3) { animation-delay: .2s; }
         .pf-intro > *:nth-child(4) { animation-delay: .28s; }
         .pf-intro > *:nth-child(5) { animation-delay: .36s; }
-        /* hero CTA */
+        /* hero CTA: matches the outlined orange offset-shadow style */
         .pf-cta {
           display: inline-block;
-          font-family: ${C.sans};
-          font-size: 15px;
+          font-family: ${C.mono};
+          font-size: 14px;
           font-weight: 700;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-          background: ${C.accentText};
-          padding: 13px 30px;
+          letter-spacing: 0.3px;
+          color: ${C.accentText};
+          background: ${C.accentSoft};
+          border: 1px solid ${C.accent};
+          padding: 14px 56px;
           border-radius: 10px;
           text-decoration: none;
-          box-shadow: 0 2px 6px rgba(186, 78, 18, 0.25);
-          transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+          box-shadow: 3px 3px 0 ${C.accent};
+          transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
         }
         .pf-cta:hover {
-          background: #A34310;
-          transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(186, 78, 18, 0.3);
+          background: rgba(232,99,28,0.14);
+          transform: translate(2px, 2px);
+          box-shadow: 1px 1px 0 ${C.accent};
         }
         @keyframes pf-settle {
           from { transform: translateY(22px); }
@@ -560,14 +562,11 @@ export default function Portfolio() {
           border-radius: 4px;
         }
         .pf-hero { display: grid; grid-template-columns: 1.2fr .8fr; gap: 44px; align-items: center; }
-        .pf-hero-photo { --pf-cut: polygon(
-          0 22px, 22px 0,
-          calc(100% - 22px) 0, 100% 22px,
-          100% calc(100% - 22px), calc(100% - 22px) 100%,
-          22px 100%, 0 calc(100% - 22px)
-        ); }
-        /* Shadow lives on the wrapper: filter follows the clip-path
-           silhouette, while box-shadow would get clipped away. */
+        /* arch frame: top corners fully round (browser clamps 999px
+           to half the width), bottom matches the card radius */
+        .pf-hero-photo { --pf-arch: 999px 999px 22px 22px; }
+        /* Shadow lives on the wrapper so it traces the arch and the
+           offset panel together. */
         .pf-photo-frame {
           position: relative;
           /* reserve room for the offset accent panel so it never
@@ -590,9 +589,9 @@ export default function Portfolio() {
           transform: translate(12px, 12px);
           background: ${C.accent};
           opacity: 0.9;
-          clip-path: var(--pf-cut);
+          border-radius: var(--pf-arch);
         }
-        .pf-photo { width: 100%; height: auto; display: block; position: relative; clip-path: var(--pf-cut); }
+        .pf-photo { width: 100%; height: auto; display: block; position: relative; border-radius: var(--pf-arch); }
         /* ── stats strip: numbers instead of paragraphs ── */
         .pf-stats {
           display: grid;
@@ -688,15 +687,6 @@ export default function Portfolio() {
           transition: transform .25s ease;
         }
         details[open] > summary .pf-plus { transform: rotate(45deg); }
-        .pf-srow {
-          display: grid;
-          grid-template-columns: 220px 1fr;
-          gap: 18px;
-          padding: 13px 12px;
-          border-bottom: 1px solid ${C.line};
-          transition: background .2s ease;
-        }
-        .pf-hydrated .pf-srow:hover { background: ${C.card}; }
         /* ── the bento: flagship products in varied tiles ── */
         .pf-bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
         .pf-b-tile {
@@ -711,6 +701,11 @@ export default function Portfolio() {
           grid-column: span 2;
           background: #FDF1E9;
           border-color: rgba(232,99,28,0.4);
+        }
+        /* the arch tile: one bento window echoing the hero frame */
+        .pf-b-arch {
+          border-radius: 999px 999px 14px 14px;
+          padding-top: 56px;
         }
         @media (max-width: 900px) {
           .pf-bento { grid-template-columns: 1fr 1fr; }
@@ -792,7 +787,6 @@ export default function Portfolio() {
           .pf-stats { grid-template-columns: 1fr 1fr; }
           .pf-stat:nth-child(3) { border-left: none; padding-left: 0; }
           .pf-stat { padding-top: 14px; }
-          .pf-srow { grid-template-columns: 1fr; gap: 4px; }
         }
         .pf-card { transition: background .2s ease; }
         @media (prefers-reduced-motion: reduce) {
@@ -806,7 +800,7 @@ export default function Portfolio() {
           .pf-cta:hover { transform: none; }
           .pf-marquee-track { animation: none; }
           .pf-hl { animation: none; background-size: 100% 42%; }
-          .pf-plus, .pf-lrow summary, .pf-srow, .pf-b-tile { transition: none; }
+          .pf-plus, .pf-lrow summary, .pf-b-tile { transition: none; }
           .pf-hydrated .pf-b-tile:hover { transform: none; }
           .pf-hydrated .pf-cursor { animation: none; }
         }
@@ -937,17 +931,35 @@ export default function Portfolio() {
                     ))}
                   </div>
                 </div>
-                <div className="pf-ph">
-                  <div>
-                    <div style={{ color: C.accentText, marginBottom: 10, display: "flex", justifyContent: "center" }}>
-                      <Icon name={s.icon} />
+                {s.img ? (
+                  <img
+                    src={s.img}
+                    alt={s.imgAlt}
+                    width={s.imgW}
+                    height={s.imgH}
+                    loading="lazy"
+                    decoding="async"
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      borderRadius: 14,
+                      border: `1px solid ${C.line}`,
+                      boxShadow: "0 10px 30px rgba(24,32,40,0.10)",
+                    }}
+                  />
+                ) : (
+                  <div className="pf-ph">
+                    <div>
+                      <div style={{ color: C.accentText, marginBottom: 10, display: "flex", justifyContent: "center" }}>
+                        <Icon name={s.icon} />
+                      </div>
+                      <div style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: C.accentText, marginBottom: 6 }}>
+                        Image placeholder
+                      </div>
+                      <div style={{ fontFamily: C.mono, fontSize: 12, color: C.faint }}>{s.visual}</div>
                     </div>
-                    <div style={{ fontFamily: C.mono, fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: C.accentText, marginBottom: 6 }}>
-                      Image placeholder
-                    </div>
-                    <div style={{ fontFamily: C.mono, fontSize: 12, color: C.faint }}>{s.visual}</div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
@@ -979,6 +991,7 @@ export default function Portfolio() {
                 border: `1px solid ${C.accent}`,
                 background: C.accentSoft,
                 color: C.accentText,
+                boxShadow: `3px 3px 0 ${C.accent}`,
               }}
             >
               Describe your problem ↗
@@ -995,7 +1008,12 @@ export default function Portfolio() {
           </h2>
           <div className="pf-bento">
             {PRODUCTS.map((p, i) => (
-              <article key={p.name} className={i === 0 ? "pf-card pf-b-tile pf-b-feat" : "pf-card pf-b-tile"}>
+              <article
+                key={p.name}
+                className={
+                  "pf-card pf-b-tile" + (i === 0 ? " pf-b-feat" : "") + (p.arch ? " pf-b-arch" : "")
+                }
+              >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                   {p.retired ? (
                     <span
@@ -1082,50 +1100,6 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* how I work */}
-        <section aria-labelledby="how-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
-          <Eyebrow>How I work</Eyebrow>
-          <h2 id="how-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 28px" }}>
-            Fast to build, honest about what I ship
-          </h2>
-          <div style={{ display: "grid", gap: 22, maxWidth: 760 }}>
-            {[
-              "AI-accelerated, human-verified. I read every diff before it lands.",
-              "Performance is a budget, not a phase. This site practices what it bills for.",
-              "DNS to database: I own the whole path and build like the person on call.",
-              "Clean handoffs. You own the thing when we're done.",
-            ].map((t) => (
-              <div key={t} className="pf-card" style={{ display: "flex", gap: 18, alignItems: "baseline" }}>
-                <span aria-hidden="true" style={{ fontFamily: C.mono, color: C.accent, fontSize: 16 }}>▸</span>
-                <span style={{ fontSize: "clamp(18px, 2.6vw, 26px)", fontWeight: 800, letterSpacing: -0.5, lineHeight: 1.4 }}>
-                  {t}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* skills by layer */}
-        <section aria-labelledby="skills-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
-          <Eyebrow>Stack</Eyebrow>
-          <h2 id="skills-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
-            Fluency by layer
-          </h2>
-          <div style={{ borderTop: `1px solid ${C.line}` }}>
-            {SKILLS.map((s) => (
-              <div key={s.layer} className="pf-srow" style={{ alignItems: "baseline" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.accentText }}>
-                  <Icon name={s.icon} />
-                  <h3 style={{ fontFamily: C.mono, fontSize: 12, letterSpacing: 1.5, textTransform: "uppercase", margin: 0, color: C.accentText }}>
-                    {s.layer}
-                  </h3>
-                </div>
-                <div style={{ fontSize: 13.5, color: C.slate, lineHeight: 1.7 }}>{s.items.join("  ·  ")}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* contact */}
         <footer id="contact" style={{ padding: "26px 0 64px", borderTop: `1px solid ${C.line}` }}>
           <Eyebrow>Contact</Eyebrow>
@@ -1147,6 +1121,7 @@ export default function Portfolio() {
                   padding: "9px 16px",
                   borderRadius: 8,
                   border: `1px solid ${label === "Email" ? C.accent : C.line}`,
+                  boxShadow: label === "Email" ? `3px 3px 0 ${C.accent}` : "none",
                   background: label === "Email" ? C.accentSoft : C.card,
                   color: label === "Email" ? C.accentText : C.slate,
                 }}
