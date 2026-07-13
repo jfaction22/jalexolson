@@ -15,10 +15,10 @@ const C = {
   card: "#FFFFFF",
   ink: "#182028",
   slate: "#4E5A66",
-  faint: "#6E7983",
+  faint: "#5D6873",
   line: "#E3E6E3",
   accent: "#E8631C",
-  accentText: "#BA4E12",
+  accentText: "#A8440E",
   accentSoft: "rgba(232,99,28,0.08)",
   green: "#1F7A4D",
   panel: "#131A21",
@@ -827,6 +827,8 @@ export default function Portfolio() {
           </nav>
         </header>
 
+        <main>
+
         {/* hero */}
         <section aria-labelledby="hero-title" style={{ padding: "64px 0 56px" }}>
           <div className="pf-hero">
@@ -863,6 +865,8 @@ export default function Portfolio() {
                 <img
                   className="pf-photo"
                   src={PHOTO}
+                  srcSet="/jack-maroon-bells-480.webp 480w, /jack-maroon-bells.webp 780w"
+                  sizes="(max-width: 760px) 90vw, 400px"
                   alt="Alex Olson standing at Maroon Lake below the Maroon Bells near Aspen, Colorado"
                   width="780"
                   height="1040"
@@ -1099,6 +1103,8 @@ export default function Portfolio() {
             </div>
           </div>
         </section>
+
+        </main>
 
         {/* contact */}
         <footer id="contact" style={{ padding: "26px 0 64px", borderTop: `1px solid ${C.line}` }}>
