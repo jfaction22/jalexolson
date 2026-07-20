@@ -1,11 +1,20 @@
+// ─────────────────────────────────────────────────────────────
+// ARCHIVED · v1 generalist portfolio (pre-consulting pivot)
+// Kept byte-for-byte for reference — the Build > Buy argument,
+// the savings receipt, and the six-service deck live here and
+// are good material for a future /apps page.
+//
+// To keep it as a hidden page:
+//   1. Route it somewhere unguessable, e.g. /v1-archive
+//   2. Add <meta name="robots" content="noindex,nofollow"> to
+//      that route's <head> (and/or Disallow it in robots.txt)
+//   3. Don't link to it from anywhere on the live site
+// ─────────────────────────────────────────────────────────────
+
 import { useEffect, useRef, useState } from "react";
 
 // ─────────────────────────────────────────────────────────────
-// jalexolson.com v2 — agentic engineering consulting.
-// Hero -> Field reports -> Offers -> Work -> Contact.
-// The v1 generalist page is archived verbatim in
-// jalexolson-backup-v1.jsx (mount at a private route with
-// <meta name="robots" content="noindex,nofollow">).
+// jalexolson.com, one-page portfolio (freelance + job search)
 // Drop into an Astro island (client:idle), a Remix route, or any
 // Vite app. Single default export, no required props, system
 // fonts only. One image on the whole page: put
@@ -13,7 +22,6 @@ import { useEffect, useRef, useState } from "react";
 // ─────────────────────────────────────────────────────────────
 
 const PHOTO = "/jack-maroon-bells.webp";
-const CAL = "https://calendly.com/jalexolson/triage"; // TODO: swap in your real booking link
 
 const C = {
   paper: "#F7F8F6",
@@ -36,45 +44,89 @@ const C = {
 // ───────────── DATA (edit freely) ─────────────
 
 const MARQUEE = [
-  "AI agents", "Reliability", "Injection defense", "Evals", "Observability",
-  "Cloudflare Workers", "Supabase", "MCP", "Prerendering", "Cost control", "React",
+  "React", "TypeScript", "AI agents", "Cloudflare Workers", "Vite",
+  "Automations", "Supabase", "TanStack", "SEO", "Stripe", "Performance",
 ];
 
-// The three ways to hire me. First card gets the featured tint.
-const OFFERS = [
+const SERVICES = [
   {
-    icon: "search",
+    icon: "code",
     featured: true,
-    label: "Agent reliability & security audit",
-    price: "$3,500 · fixed price · 2-week turnaround",
-    benefit: "Know where your agent will fail before it does",
+    label: "React development · my go-to",
+    benefit: "Launch the app your business actually needs",
     how:
-      "A fixed-scope review of your agent system: architecture, tool-calling boundaries, prompt-injection surface, token spend, failure modes, and observability gaps. You get a prioritized P0/P1/P2 report and a 60-minute walkthrough. The field reports above are the kind of thing I find.",
-    tags: ["Architecture", "Injection surface", "Cost", "Evals"],
-    visual: "Sample audit page: prioritized P0/P1/P2 findings",
+      "Custom web apps, built and shipped: designed, deployed, documented, and handed over so you own it outright instead of renting another subscription.",
+    tags: ["React", "TypeScript", "Vite", "TanStack"],
+    img: "/crm-dashboard.webp",
+    imgW: 1000,
+    imgH: 667,
+    imgAlt: "Custom CRM dashboard with pipeline, activity feed, and sales performance widgets",
+    visual: "App screenshot: a custom dashboard in production",
   },
   {
     icon: "bot",
-    label: "Agent rescue",
-    price: "$175/hr · booked in 10-hour blocks",
-    benefit: "Your agent is misbehaving in production. I've been there.",
+    label: "AI agents + automation",
+    benefit: "Get hours of busywork back every week",
     how:
-      "Runaway token costs, loops, injection abuse, drift, restart storms — I diagnose and fix live agent systems. Ten-hour blocks keep it moving: no drawn-out SOW, no discovery phase, straight to the logs.",
-    tags: ["Incident response", "Hardening", "Observability"],
-    visual: "Before / after: error rate and cost graphs",
+      "Invoice entry, report chasing, status updates, alerts: if your team does it by hand every week, I can probably automate it. I run fleets of these bots for my own products.",
+    tags: ["LLM APIs", "Workflows", "Bots", "Node"],
+    img: "/agent-workflow.webp",
+    imgW: 1000,
+    imgH: 527,
+    imgAlt: "Multi-agent content automation workflow with research agents, planners, and writers wired together in n8n",
+    visual: "Diagram: manual workflow before / automated after",
   },
   {
-    icon: "globe",
-    label: "AI visibility · GEO",
-    price: "from $2,500/mo · retainer",
-    benefit: "Show up in AI answers, not just search results",
+    icon: "gauge",
+    label: "Performance + Core Web Vitals",
+    benefit: "A faster site closes more customers",
     how:
-      "ChatGPT, Claude, and Perplexity are becoming the front door to your customers. I make your site readable to AI crawlers and your data callable by agents: structured data, prerendering, MCP servers. I built and operate the prerender infrastructure this runs on.",
-    tags: ["GEO/AEO", "JSON-LD", "Prerendering", "MCP"],
+      "Slow pages bleed sales and Google rankings. I find the bloat and cut it. This page is the demo: run Lighthouse on it right now.",
+    tags: ["Lighthouse", "Core Web Vitals", "Bundle analysis"],
+    img: "/lighthouse-100.webp",
+    imgW: 1000,
+    imgH: 689,
+    imgAlt: "PageSpeed Insights report scoring 100 in Performance, Accessibility, Best Practices, and SEO, with 0.8s First Contentful Paint, 1.8s Largest Contentful Paint, 0ms blocking time, and zero layout shift",
+    visual: "Screenshot: Lighthouse 100 / 100 / 100 / 100",
+  },
+  {
+    icon: "search",
+    label: "SEO for JavaScript apps",
+    benefit: "Show up when your customers search",
+    how:
+      "If Google and AI assistants can't read your app, you're invisible to buyers already looking for you. I built a prerendering service for exactly this problem; it runs production traffic today.",
+    tags: ["Prerendering", "Structured data", "Edge routing"],
     img: "/seo-vibe-hero.webp",
     imgW: 1000,
     imgH: 562,
     imgAlt: "SEO Vibe landing page showing what Google sees before and after prerendering: an empty root div versus full content",
+    visual: "Screenshot: search results before / after prerendering",
+  },
+  {
+    icon: "plug",
+    label: "Integrations + platform work",
+    benefit: "Take payments and sign-ups without the duct tape",
+    how:
+      "Stripe billing, Google and Microsoft login, licensing: the plumbing between demo and business. I've wired all of it for my own paying products.",
+    tags: ["Stripe", "OAuth 2.0", "Supabase", "Cloudflare"],
+    img: "/auth-providers.webp",
+    imgW: 1000,
+    imgH: 443,
+    imgAlt: "Authentication provider dashboard with email, phone, SAML, Apple, Azure, GitHub, and a dozen more sign-in methods enabled",
+    visual: "Screenshot: checkout and sign-in flow",
+  },
+  {
+    icon: "globe",
+    label: "Marketing sites · Astro + React",
+    benefit: "A website that works while you work",
+    how:
+      "Fast, findable, and maintained, with hosting handled if you want it. Built on React and Astro, the same stack as this page. I've run over a hundred sites for a decade; yours won't be my first rodeo.",
+    tags: ["React", "Astro", "SEO", "Hosting"],
+    img: "/legendary-organics.webp",
+    imgW: 1000,
+    imgH: 511,
+    imgAlt: "Legendary Organics dispensary website hero: Be Legendary. Be You. with location shop buttons over a photo of the store interior",
+    visual: "Screenshot: this site, which is also the sample",
   },
 ];
 
@@ -129,6 +181,25 @@ const PRODUCTS = [
 
 // Side projects: smaller cards below the flagship products.
 // Verify the stack tags and details, these are drafts.
+// Rent vs own: the argument, one row at a time.
+const VERSUS = [
+  { dim: "Month one", rent: "Cheaper. That's the hook.", own: "An investment with an end date." },
+  { dim: "Year three", rent: "A $500/mo tool is $18,000 gone. You own nothing.", own: "Paid for itself. Costs $0/mo, forever." },
+  { dim: "Price increases", rent: "Whenever they feel like it.", own: "There is no price. You own it." },
+  { dim: "The feature you need", rent: "Upvote it. Wait. Hope.", own: "I build it. Usually that week." },
+  { dim: "Your data", rent: "Hostage in their cloud.", own: "On your server. Yours." },
+  { dim: "They get acquired", rent: "Sunset email, 30 days to migrate.", own: "Nothing happens. It's yours." },
+  { dim: "When you stop paying", rent: "Everything disappears.", own: "There's nothing to stop paying." },
+];
+
+// The receipt: bills eliminated by building instead of renting.
+const SAVINGS = [
+  { item: "Prerender.io", note: "replaced with Rendr.it, my own prerender fleet", amount: "$1,800" },
+  { item: "Flywheel hosting", note: "every site migrated to my own server", amount: "$5,100" },
+  { item: "Dedicated server", note: "right-sized, backups scripted to the cloud", amount: "$5,000" },
+  { item: "SaaS subscriptions (x18)", note: "replaced with software I built", amount: "$9,000" },
+];
+
 const SIDE_PROJECTS = [
   {
     name: "Build a Golf Sim (BAGS)",
@@ -225,7 +296,6 @@ const INCIDENTS = [
 
 
 const LINKS = [
-  { label: "Book a call", href: CAL },
   { label: "Email", href: "mailto:jack@jalexolson.com" },
   { label: "GitHub", href: "https://github.com/jalexolson" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/jalexolson" },
@@ -368,7 +438,7 @@ function LiveDot() {
 
 // ───────────── PAGE ─────────────
 
-export default function Portfolio() {
+export default function PortfolioBackupV1() {
   const rootRef = useRef(null);
   const spotRef = useRef(null);
   const [perf, setPerf] = useState(null);
@@ -575,7 +645,7 @@ export default function Portfolio() {
           color: ${C.accentText};
           background: ${C.accentSoft};
           border: 1px solid ${C.accent};
-          padding: 14px 36px;
+          padding: 14px 56px;
           border-radius: 10px;
           text-decoration: none;
           box-shadow: 3px 3px 0 ${C.accent};
@@ -835,6 +905,105 @@ export default function Portfolio() {
           .pf-spot { padding: 26px calc(50% - 150px) 30px; gap: 16px; }
           .pf-spot-card { flex-basis: 300px; }
         }
+        /* ── the versus ledger: rent vs own ── */
+        .pf-vs { border-top: 1px solid ${C.line}; }
+        .pf-vs-head {
+          display: grid;
+          grid-template-columns: 150px 1fr 1fr;
+          gap: 18px;
+          padding: 12px 12px 10px;
+          border-bottom: 1px solid ${C.line};
+          font-family: ${C.mono};
+          font-size: 11px;
+          letter-spacing: 1.6px;
+          text-transform: uppercase;
+        }
+        .pf-vs-row {
+          display: grid;
+          grid-template-columns: 150px 1fr 1fr;
+          gap: 18px;
+          padding: 14px 12px;
+          border-bottom: 1px solid ${C.line};
+          align-items: baseline;
+        }
+        .pf-vs-dim {
+          font-family: ${C.mono};
+          font-size: 11px;
+          letter-spacing: 1.2px;
+          text-transform: uppercase;
+          color: ${C.faint};
+        }
+        .pf-vs-rent { font-size: 14px; color: ${C.faint}; }
+        .pf-vs-own { font-size: 14px; font-weight: 700; }
+        .pf-vs-x { color: ${C.faint}; margin-right: 7px; }
+        .pf-vs-c { color: ${C.accent}; margin-right: 7px; }
+        @media (max-width: 700px) {
+          .pf-vs-head { display: none; }
+          .pf-vs-row { grid-template-columns: 1fr; gap: 6px; padding: 16px 12px; }
+        }
+        /* ── the receipt: savings as a thermal-paper artifact ── */
+        .pf-receipt-wrap { display: flex; justify-content: center; padding: 6px 0 10px; }
+        .pf-receipt {
+          width: min(430px, 100%);
+          background: #FFFFFF;
+          font-family: ${C.mono};
+          color: ${C.ink};
+          padding: 30px 26px 42px;
+          position: relative;
+          transform: rotate(-1.2deg);
+          filter: drop-shadow(0 18px 36px rgba(24,32,40,0.16));
+          clip-path: polygon(
+            0 0, 100% 0,
+            100% calc(100% - 11px), 97.5% 100%, 95% calc(100% - 11px),
+            92.5% 100%, 90% calc(100% - 11px), 87.5% 100%, 85% calc(100% - 11px),
+            82.5% 100%, 80% calc(100% - 11px), 77.5% 100%, 75% calc(100% - 11px),
+            72.5% 100%, 70% calc(100% - 11px), 67.5% 100%, 65% calc(100% - 11px),
+            62.5% 100%, 60% calc(100% - 11px), 57.5% 100%, 55% calc(100% - 11px),
+            52.5% 100%, 50% calc(100% - 11px), 47.5% 100%, 45% calc(100% - 11px),
+            42.5% 100%, 40% calc(100% - 11px), 37.5% 100%, 35% calc(100% - 11px),
+            32.5% 100%, 30% calc(100% - 11px), 27.5% 100%, 25% calc(100% - 11px),
+            22.5% 100%, 20% calc(100% - 11px), 17.5% 100%, 15% calc(100% - 11px),
+            12.5% 100%, 10% calc(100% - 11px), 7.5% 100%, 5% calc(100% - 11px),
+            2.5% 100%, 0 calc(100% - 11px)
+          );
+        }
+        .pf-r-head { text-align: center; margin-bottom: 16px; }
+        .pf-r-title { font-size: 15px; font-weight: 800; letter-spacing: 3px; }
+        .pf-r-sub { font-size: 11px; color: ${C.faint}; letter-spacing: 1.6px; margin-top: 4px; }
+        .pf-r-rule { border: none; border-top: 1.5px dashed rgba(24,32,40,0.3); margin: 14px 0; }
+        .pf-r-row { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 700; }
+        .pf-r-dots { flex: 1; border-bottom: 2px dotted rgba(24,32,40,0.35); transform: translateY(-3px); }
+        .pf-r-note { font-size: 11.5px; color: ${C.faint}; margin: 3px 0 12px; }
+        .pf-r-total { display: flex; align-items: baseline; gap: 8px; font-size: 15px; font-weight: 800; }
+        .pf-r-total .pf-r-amt { font-size: 22px; letter-spacing: -0.5px; }
+        .pf-r-forever { text-align: right; font-size: 11px; color: ${C.accentText}; margin-top: 4px; letter-spacing: 1.2px; }
+        .pf-r-stamp {
+          position: absolute;
+          top: 74px;
+          right: 16px;
+          transform: rotate(8deg);
+          border: 3px solid ${C.accent};
+          border-radius: 6px;
+          color: ${C.accent};
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 2px;
+          padding: 5px 9px;
+          text-align: center;
+          opacity: 0.85;
+          user-select: none;
+        }
+        .pf-r-barcode {
+          height: 34px;
+          margin: 16px auto 8px;
+          width: 78%;
+          background: repeating-linear-gradient(90deg,
+            ${C.ink} 0 2px, transparent 2px 5px,
+            ${C.ink} 5px 6px, transparent 6px 10px,
+            ${C.ink} 10px 13px, transparent 13px 15px,
+            ${C.ink} 15px 16px, transparent 16px 21px);
+        }
+        .pf-r-foot { text-align: center; font-size: 10.5px; letter-spacing: 1.4px; color: ${C.faint}; }
                 /* ── the terminal: incidents as a live console ── */
         .pf-term {
           background: ${C.panel};
@@ -894,13 +1063,12 @@ export default function Portfolio() {
           user-select: none;
           pointer-events: none;
         }
-        /* render perf for sections below the offers deck only.
+        /* render perf for sections below the services deck only.
            Excluded: the hero (content-visibility's paint containment
-           would clip the photo's drop shadow), the field reports
-           terminal (usually near the fold), and the offers section
-           (containment breaks the sticky stacking cards and would
-           clip their shadows). */
-        section:nth-of-type(n+4) { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+           would clip the photo's drop shadow) and the services
+           section (containment breaks the sticky stacking cards
+           and would clip their shadows). */
+        section:nth-of-type(n+3) { content-visibility: auto; contain-intrinsic-size: auto 600px; }
         @media (max-width: 1200px) {
           .pf-ghost { display: none; }
         }
@@ -944,10 +1112,9 @@ export default function Portfolio() {
             jalexolson<span style={{ color: C.accentText }}>.com</span>
           </div>
           <nav className="pf-nav" aria-label="Sections" style={{ display: "flex", gap: 18, fontFamily: C.mono, fontSize: 12 }}>
-            <a href="#incidents" style={{ color: C.slate, textDecoration: "none" }}>Field reports</a>
-            <a href="#offers" style={{ color: C.slate, textDecoration: "none" }}>Offers</a>
             <a href="#work" style={{ color: C.slate, textDecoration: "none" }}>Work</a>
-            <a href="#contact" style={{ color: C.accentText, textDecoration: "none" }}>Book a call</a>
+            <a href="#incidents" style={{ color: C.slate, textDecoration: "none" }}>Incidents</a>
+            <a href="#contact" style={{ color: C.accentText, textDecoration: "none" }}>Hire me</a>
           </nav>
         </header>
 
@@ -957,7 +1124,7 @@ export default function Portfolio() {
         <section aria-labelledby="hero-title" style={{ padding: "64px 0 56px" }}>
           <div className="pf-hero">
             <div className="pf-intro">
-              <Eyebrow>Alex Olson · Agentic engineer · Colorado</Eyebrow>
+              <Eyebrow>Alex Olson · Frontend engineer · Colorado</Eyebrow>
               <h1
                 id="hero-title"
                 style={{
@@ -968,15 +1135,14 @@ export default function Portfolio() {
                   margin: "0 0 18px",
                 }}
               >
-                I make AI agents <span className="pf-hl">production-reliable</span>.
+                I build <span className="pf-hl">bespoke apps</span> tailored to what people actually want.
               </h1>
               <p style={{ fontSize: 17, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 26px" }}>
-                14+ years building for the web. Five SaaS products I ship and operate myself,
-                including agent fleets that have survived real attacks, real load, and real
-                2 a.m. pages. Now I do that for your systems.
+                I have 14+ years building for the web. I sold off a WordPress agency that had over 100 clients in its heyday.
+                I've built 5 different SaaS products, dozens of AI automations and agents.
               </p>
               <div>
-                <a href={CAL} className="pf-cta">Book a 20-min triage call</a>
+                <a href="#contact" className="pf-cta">Hire Me</a>
               </div>
             </div>
             <div className="pf-hero-photo">
@@ -1027,59 +1193,20 @@ export default function Portfolio() {
           </div>
         </div>
 
-        {/* incident reports */}
-        <section id="incidents" aria-labelledby="incidents-title" className="pf-reveal" style={{ padding: "26px 0 54px", position: "relative" }}>
-          <div className="pf-ghost" aria-hidden="true">PAGED</div>
-          <Eyebrow>Field reports</Eyebrow>
-          <h2 id="incidents-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
-            Problems I've actually been paged for
-          </h2>
-          <div className="pf-term">
-            <div className="pf-term-bar">
-              <span className="pf-term-dot" style={{ background: C.accent }} />
-              <span className="pf-term-dot" style={{ background: "#F2C744" }} />
-              <span className="pf-term-dot" style={{ background: "#3FCF8E" }} />
-              <span className="pf-term-title">alex@edge: ~/ops</span>
-            </div>
-            <div className="pf-term-body">
-              <div className="pf-term-cmd">$ tail -f incidents.log</div>
-              {INCIDENTS.map((ir) => (
-                <div key={ir.id} className="pf-term-entry">
-                  <div className="pf-term-head">
-                    <span className="pf-term-id">[{ir.id}]</span> <span className="pf-term-id">[{ir.sev}]</span> {ir.title}
-                  </div>
-                  <div className="pf-term-kv"><span className="pf-term-k">problem</span><span>{ir.problem}</span></div>
-                  <div className="pf-term-kv"><span className="pf-term-k">fix</span><span>{ir.fix}</span></div>
-                  <div className="pf-term-kv">
-                    <span className="pf-term-k">outcome</span>
-                    <span>{ir.outcome} <span className="pf-term-ok">✓ resolved</span>{ir.saved ? <span className="pf-term-saved"> [{ir.saved} saved]</span> : null}</span>
-                  </div>
-                </div>
-              ))}
-              <div aria-hidden="true">$ <span className="pf-cursor">&nbsp;</span></div>
-            </div>
-          </div>
-        </section>
-
         {/* services: sticky stacking deck (no pf-reveal here, a
             transformed ancestor would break position: sticky) */}
-        <section id="offers" aria-labelledby="services-title" style={{ padding: "26px 0 54px" }}>
-          <Eyebrow>Offers</Eyebrow>
+        <section aria-labelledby="services-title" style={{ padding: "26px 0 54px" }}>
+          <Eyebrow>For clients</Eyebrow>
           <h2 id="services-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
-            Three ways to hire me
+            What hiring me actually gets you
           </h2>
           <div className="pf-stack">
-            {OFFERS.map((s, i) => (
+            {SERVICES.map((s, i) => (
               <div key={s.benefit} className="pf-stack-card" style={{ "--i": i }}>
                 <div className="pf-stack-text">
                   <div style={{ fontWeight: 800, fontSize: "clamp(24px, 3.4vw, 36px)", letterSpacing: "-0.7px", lineHeight: 1.12, marginBottom: 12 }}>
                     {s.benefit}
                   </div>
-                  {s.price ? (
-                    <div style={{ fontFamily: C.mono, fontSize: 13, fontWeight: 700, color: C.accentText, letterSpacing: 0.4, marginBottom: 12 }}>
-                      {s.price}
-                    </div>
-                  ) : null}
                   <p style={{ fontSize: 14.5, color: C.slate, lineHeight: 1.65, margin: "0 auto 14px", maxWidth: 600 }}>{s.how}</p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
                     {s.tags.map((t) => (
@@ -1130,13 +1257,13 @@ export default function Portfolio() {
             }}
           >
             <div style={{ fontSize: 16, fontWeight: 700 }}>
-              Not sure which one fits?
+              Not sure which one you need?
             </div>
             <div style={{ fontSize: 14, color: C.slate }}>
-              20 minutes, no pitch. Bring the symptom, leave with a diagnosis.
+              Tell me the problem, I'll tell you the fix. That part's free.
             </div>
             <a
-              href={CAL}
+              href="mailto:jack@jalexolson.com"
               style={{
                 fontFamily: C.mono,
                 fontSize: 13,
@@ -1149,7 +1276,7 @@ export default function Portfolio() {
                 boxShadow: `3px 3px 0 ${C.accent}`,
               }}
             >
-              Book a triage call ↗
+              Describe your problem ↗
             </a>
           </div>
         </section>
@@ -1185,19 +1312,140 @@ export default function Portfolio() {
           </div>
         </section>
 
+        {/* incident reports */}
+        <section id="incidents" aria-labelledby="incidents-title" className="pf-reveal" style={{ padding: "26px 0 54px", position: "relative" }}>
+          <div className="pf-ghost" aria-hidden="true">PAGED</div>
+          <Eyebrow>Selected incident reports</Eyebrow>
+          <h2 id="incidents-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 26px" }}>
+            Problems I've actually been paged for
+          </h2>
+          <div className="pf-term">
+            <div className="pf-term-bar">
+              <span className="pf-term-dot" style={{ background: C.accent }} />
+              <span className="pf-term-dot" style={{ background: "#F2C744" }} />
+              <span className="pf-term-dot" style={{ background: "#3FCF8E" }} />
+              <span className="pf-term-title">alex@edge: ~/ops</span>
+            </div>
+            <div className="pf-term-body">
+              <div className="pf-term-cmd">$ tail -f incidents.log</div>
+              {INCIDENTS.map((ir) => (
+                <div key={ir.id} className="pf-term-entry">
+                  <div className="pf-term-head">
+                    <span className="pf-term-id">[{ir.id}]</span> <span className="pf-term-id">[{ir.sev}]</span> {ir.title}
+                  </div>
+                  <div className="pf-term-kv"><span className="pf-term-k">problem</span><span>{ir.problem}</span></div>
+                  <div className="pf-term-kv"><span className="pf-term-k">fix</span><span>{ir.fix}</span></div>
+                  <div className="pf-term-kv">
+                    <span className="pf-term-k">outcome</span>
+                    <span>{ir.outcome} <span className="pf-term-ok">✓ resolved</span>{ir.saved ? <span className="pf-term-saved"> [{ir.saved} saved]</span> : null}</span>
+                  </div>
+                </div>
+              ))}
+              <div aria-hidden="true">$ <span className="pf-cursor">&nbsp;</span></div>
+            </div>
+          </div>
+        </section>
+
         </main>
 
+        {/* build vs buy: the argument */}
+        <section aria-labelledby="vs-title" className="pf-reveal" style={{ padding: "26px 0 54px" }}>
+          <Eyebrow>Stop renting software</Eyebrow>
+          <h2 id="vs-title" style={{ fontSize: "clamp(26px, 4.2vw, 40px)", fontWeight: 800, letterSpacing: -0.8, margin: "0 0 10px" }}>
+            Build <span style={{ color: C.accentText }}>&gt;</span> Buy
+          </h2>
+          <p style={{ fontSize: 15.5, color: C.slate, lineHeight: 1.7, maxWidth: 620, margin: "0 0 26px" }}>
+            You're paying rent on software. Every month, forever, with nothing to show for it
+            the day you stop. I build you the tool once, tailored to how your business actually
+            works. Then it's yours: no seats, no tiers, no "updates to our pricing" emails. Ever.
+          </p>
+          <div className="pf-vs">
+            <div className="pf-vs-head">
+              <span />
+              <span style={{ color: C.faint }}>Rent it</span>
+              <span style={{ color: C.accentText, fontWeight: 700 }}>Own it</span>
+            </div>
+            {VERSUS.map((v) => (
+              <div key={v.dim} className="pf-vs-row">
+                <span className="pf-vs-dim">{v.dim}</span>
+                <span className="pf-vs-rent"><span className="pf-vs-x" aria-hidden="true">✗</span>{v.rent}</span>
+                <span className="pf-vs-own"><span className="pf-vs-c" aria-hidden="true">✓</span>{v.own}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 22px", padding: "22px 12px 0" }}>
+            <div style={{ fontSize: 14, color: C.slate, maxWidth: 520 }}>
+              Fair is fair: a few tools earn their fee. It's the other six line items on your
+              card statement we're coming for.
+            </div>
+            <a
+              href="mailto:jack@jalexolson.com?subject=My%20worst%20subscription"
+              style={{
+                fontFamily: C.mono,
+                fontSize: 13,
+                textDecoration: "none",
+                padding: "8px 16px",
+                borderRadius: 8,
+                border: `1px solid ${C.accent}`,
+                background: C.accentSoft,
+                color: C.accentText,
+                boxShadow: `3px 3px 0 ${C.accent}`,
+              }}
+            >
+              Send me your worst subscription ↗
+            </a>
+          </div>
+        </section>
 
-
+        {/* the receipt: build vs buy, in dollars */}
+        <section aria-labelledby="savings-title" className="pf-reveal" style={{ padding: "26px 0 54px", position: "relative" }}>
+          <div className="pf-ghost" aria-hidden="true">SAVED</div>
+          <Eyebrow>Proof</Eyebrow>
+          <h2 id="savings-title" style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 8px" }}>
+            The receipts
+          </h2>
+          <p style={{ fontSize: 15, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 26px" }}>
+            Bills I stopped paying by building the tool instead.
+          </p>
+          <div className="pf-receipt-wrap">
+            <div className="pf-receipt">
+              <div className="pf-r-stamp" aria-hidden="true">OWNED<br />NOT RENTED</div>
+              <div className="pf-r-head">
+                <div className="pf-r-title">J ALEX OLSON</div>
+                <div className="pf-r-sub">BUILD &gt; BUY · COLORADO, USA</div>
+              </div>
+              <hr className="pf-r-rule" />
+              {SAVINGS.map((s) => (
+                <div key={s.item}>
+                  <div className="pf-r-row">
+                    <span>{s.item.toUpperCase()}</span>
+                    <span className="pf-r-dots" aria-hidden="true" />
+                    <span>{s.amount}</span>
+                  </div>
+                  <div className="pf-r-note">{s.note}</div>
+                </div>
+              ))}
+              <hr className="pf-r-rule" />
+              <div className="pf-r-total">
+                <span>TOTAL SAVED / YEAR</span>
+                <span className="pf-r-dots" aria-hidden="true" />
+                <span className="pf-r-amt">$20,900</span>
+              </div>
+              <div className="pf-r-forever">EVERY YEAR. FOREVER.</div>
+              <div className="pf-r-barcode" aria-hidden="true" />
+              <div className="pf-r-foot">YOUR STACK PROBABLY HAS ONE OF THESE IN IT</div>
+            </div>
+          </div>
+        </section>
 
         {/* contact */}
         <footer id="contact" style={{ padding: "26px 0 64px", borderTop: `1px solid ${C.line}` }}>
           <Eyebrow>Contact</Eyebrow>
           <h2 style={{ fontSize: "clamp(22px, 3.5vw, 30px)", fontWeight: 800, letterSpacing: -0.6, margin: "0 0 14px" }}>
-            Agent acting up? Let's look.
+            Have a project? Let's talk.
           </h2>
           <p style={{ fontSize: 15, color: C.slate, lineHeight: 1.7, maxWidth: 560, margin: "0 0 24px" }}>
-            Tell me what it's supposed to do and what it's doing instead. Honest read within a day — if it's a ten-minute fix, I'll just tell you.
+            Tell me what you're building and what's in the way. Honest read within a day.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             {LINKS.map(({ label, href }) => (
@@ -1210,10 +1458,10 @@ export default function Portfolio() {
                   textDecoration: "none",
                   padding: "9px 16px",
                   borderRadius: 8,
-                  border: `1px solid ${label === "Book a call" ? C.accent : C.line}`,
-                  boxShadow: label === "Book a call" ? `3px 3px 0 ${C.accent}` : "none",
-                  background: label === "Book a call" ? C.accentSoft : C.card,
-                  color: label === "Book a call" ? C.accentText : C.slate,
+                  border: `1px solid ${label === "Email" ? C.accent : C.line}`,
+                  boxShadow: label === "Email" ? `3px 3px 0 ${C.accent}` : "none",
+                  background: label === "Email" ? C.accentSoft : C.card,
+                  color: label === "Email" ? C.accentText : C.slate,
                 }}
               >
                 {label} ↗
